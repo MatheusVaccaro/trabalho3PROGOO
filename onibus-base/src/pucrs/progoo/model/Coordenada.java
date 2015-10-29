@@ -4,19 +4,17 @@ public class Coordenada {
 	private int id;
 	private int idCoordenada;
 	private double latitude;
-	private double longitude;
-	private int idLinha;
+	private double longitude;	
 	
 	public Coordenada() {
 		
 	}
 	
-	public Coordenada(int id, int idCoordenada, double latitude, double longitude, int idLinha) {
+	public Coordenada(int id, int idCoordenada, double latitude, double longitude) {
 		this.id = id;
 		this.idCoordenada = idCoordenada;
 		this.latitude = latitude;
-		this.longitude = longitude;
-		this.idLinha = idLinha;		
+		this.longitude = longitude;		
 	}
 
 	public int getId() {
@@ -50,12 +48,5 @@ public class Coordenada {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
-
-	public int getIdLinha() {
-		return idLinha;
-	}
-
-	public void setIdLinha(int idLinha) {
-		this.idLinha = idLinha;
-	}		
+		
 }

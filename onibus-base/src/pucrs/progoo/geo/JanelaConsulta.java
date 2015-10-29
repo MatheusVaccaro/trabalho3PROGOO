@@ -18,7 +18,7 @@ import javax.swing.JPanel;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
-import pucrs.progoo.Linhas;
+//import pucrs.progoo.Linhas;
 
 import javax.swing.JButton;
 
