@@ -24,6 +24,14 @@ public class Linha {
 		this.codigo = codigo;
 		this.tipo = tipo;
 	}
+	
+	public Linha(String idLinha, String nome, String codigo, char tipo) {
+
+		this.idLinha = idLinha;
+		this.nome = nome;
+		this.codigo = codigo;
+		this.tipo = tipo;
+	}
 		
 
 	public ArrayList<Coordenada> getCoordenadas() {
