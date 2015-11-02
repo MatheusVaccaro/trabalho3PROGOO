@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class Linha {
 	private ArrayList<Coordenada> coordenadas;
 	private ArrayList<Parada> paradas;
+	private String idLinha;
 	private String nome;
 	private String codigo;
 	private char tipo;
@@ -14,10 +15,11 @@ public class Linha {
 	}
 	
 	public Linha(ArrayList<Coordenada> coordenadas, ArrayList<Parada> paradas,
-			String nome, String codigo, char tipo) {
-		super();
+			String idLinha, String nome, String codigo, char tipo) {
+
 		this.coordenadas = coordenadas;
 		this.paradas = paradas;
+		this.idLinha = idLinha;
 		this.nome = nome;
 		this.codigo = codigo;
 		this.tipo = tipo;
@@ -38,6 +40,14 @@ public class Linha {
 
 	public void setParadas(ArrayList<Parada> paradas) {
 		this.paradas = paradas;
+	}
+	
+	public String getIdLinha(){
+		return idLinha;
+	}
+	
+	public void setIdLinha(String idLinha){
+		this.idLinha = idLinha;
 	}
 
 	public String getNome() {

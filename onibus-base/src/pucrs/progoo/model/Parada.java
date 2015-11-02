@@ -11,7 +11,7 @@ public class Parada {
 		
 	}
 	
-	public Parada(int idParada,double longitude, double latitude, char terminal){		
+	public Parada(int idParada, double longitude, double latitude, char terminal){		
 		this.idParada = idParada;		
 		this.longitude = longitude;
 		this.latitude = latitude;

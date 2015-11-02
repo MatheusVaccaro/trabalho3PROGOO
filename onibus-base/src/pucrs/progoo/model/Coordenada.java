@@ -1,8 +1,7 @@
 package pucrs.progoo.model;
 
 public class Coordenada {
-	private int id;
-	private int idCoordenada;
+	
 	private double latitude;
 	private double longitude;	
 	
@@ -10,27 +9,9 @@ public class Coordenada {
 		
 	}
 	
-	public Coordenada(int id, int idCoordenada, double latitude, double longitude) {
-		this.id = id;
-		this.idCoordenada = idCoordenada;
+	public Coordenada(double latitude, double longitude) {
 		this.latitude = latitude;
 		this.longitude = longitude;		
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public int getIdCoordenada() {
-		return idCoordenada;
-	}
-
-	public void setIdCoordenada(int idCoordenada) {
-		this.idCoordenada = idCoordenada;
 	}
 
 	public double getLatitude() {
