@@ -99,7 +99,65 @@ public class Leitura{
 		}
 	}
 	
+	//esse método precisa da estrutura criada por preparaParadaLinha() para funcionar
+	//obs: preparaParada() não foi implementado ainda
+	public static ArrayList<Parada> preparaParada(String idLinha) throws IOException{
+		int idLinhaInt = Integer.parseInt(idLinha), idLinhaCoordenadaInt = 0;
+		ArrayList<Coordenada> lista = new ArrayList<Coordenada>();		
+		Path path = Paths.get("paradas.csv");
+				
+		try(Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf-8")))){
+			sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
+			String header = sc.nextLine(); // pula cabecalho
+			
+			do{
+				sc.next(); //pula o Id da coordenada
+				String latitude = sc.next();
+				int latitudeInt = Integer.parseInt(latitude);
+				String longitude = sc.next();
+				int longitudeInt = Integer.parseInt(longitude);
+				String idLinhaCoordenada = sc.next();
+				idLinhaCoordenadaInt = Integer.parseInt(idLinhaCoordenada);
+				
+				if(idLinhaCoordenadaInt == idLinhaInt){
+					Coordenada coordenada = new Coordenada(latitudeInt, longitudeInt);
+					lista.add(coordenada);
+				}
+				
+			}while(sc.hasNext() && idLinhaCoordenadaInt <= idLinhaInt);
+				
+		
+		return lista;
+		}
+	}
 	
+	
+	
+	//hashmap dos brother VAMO CLAN
+	public static int[][] preparaParadaLinha() throws IOException{
+
+		
+		Path path = Paths.get("paradalinha.csv");
+				
+		try(Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf-8")))){
+			sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
+			String header = sc.nextLine(); // pula cabecalho
+			
+			while(sc.hasNext()){
+				String idLinha = sc.next();
+				int idLinhaInt = Integer.parseInt(idLinha);
+				String idParada = sc.next();
+				int idParadaInt = Integer.parseInt(idParada);				
+
+				
+				
+			}
+		return lista;
+		}
+	}
+	
+	
+	//esse método vai usar os três criados acima, que terão chamada privada ao invés de pública futuramente
 	public static ArrayList<Linha> constroiLinhas() throws IOException{
 		ArrayList<Linha> lista = preparaLinha();
 		
