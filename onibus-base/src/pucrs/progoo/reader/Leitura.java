@@ -100,7 +100,11 @@ public class Leitura{
 	}
 	
 	
-	
+	public static ArrayList<Linha> constroiLinhas() throws IOException{
+		ArrayList<Linha> lista = preparaLinha();
+		
+		
+	}
 	
 	
 }
