@@ -30,6 +30,8 @@ public class Leitura{
 		try{
 			Map<String, Linha> dic = preparaLinha();
 			
+			preparaCoordenada(dic);
+			
 			System.out.println(dic.size());
 			
 			for(String key: dic.keySet()){
@@ -73,37 +75,44 @@ public class Leitura{
 	}
 	
 	
-	public static ArrayList<Coordenada> preparaCoordenada(String idLinha) throws IOException{
-		int idLinhaInt = Integer.parseInt(idLinha), idLinhaCoordenadaInt = 0;
-		ArrayList<Coordenada> lista = new ArrayList<Coordenada>();		
+	public static void preparaCoordenada(Map<String, Linha> dic) throws IOException{
+	
 		Path path = Paths.get("coordenadas.csv");
 				
 		try(Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf-8")))){
 			sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
 			String header = sc.nextLine(); // pula cabecalho
 			
-			do{
+			while(sc.hasNext()){
 				sc.next(); //pula o Id da coordenada
+				
+				//REVISAR ESSES PARSES. EXISTE A POSSIBILIDADE DAS CASAS DECIMAIS ESTAREM SENDO PERDIDAS
 				String latitude = sc.next();
-				int latitudeInt = Integer.parseInt(latitude);
+				//double latitudeDouble = Double.parseDouble(latitude);
 				String longitude = sc.next();
-				int longitudeInt = Integer.parseInt(longitude);
-				String idLinhaCoordenada = sc.next();
-				idLinhaCoordenadaInt = Integer.parseInt(idLinhaCoordenada);
+				//double longitudeDouble = Double.parseDouble(longitude);
+				//
+								
+				String idLinha = sc.next();
 				
-				if(idLinhaCoordenadaInt == idLinhaInt){
-					Coordenada coordenada = new Coordenada(latitudeInt, longitudeInt);
-					lista.add(coordenada);
-				}
+				/*
+				 *A substring abaixo é feita porque o programa lê o idLinha como, por exemplo, "127816\r" e não permite que essa chave seja usada no hash map.
+				 *A substring elimina esse "\r" da String.
+				 */
+				idLinha = idLinha.substring(0, idLinha.length()-1);
 				
-			}while(sc.hasNext() && idLinhaCoordenadaInt <= idLinhaInt);
-				
-		
-		return lista;
+				Linha linha = dic.get(idLinha);
+				if(linha != null){
+					Coordenada novaCoordenada = new Coordenada(latitude, longitude);
+					ArrayList<Coordenada> lista = linha.getCoordenadas();
+					lista.add(novaCoordenada);
+					dic.put(idLinha, linha);
+				}	
+			}
 		}
 	}
 	
-	//esse método precisa da estrutura criada por preparaParadaLinha() para funcionar
+	/*//esse método precisa da estrutura criada por preparaParadaLinha() para funcionar
 	//obs: preparaParada() não foi implementado ainda
 	public static ArrayList<Parada> preparaParada(String idLinha) throws IOException{
 		int idLinhaInt = Integer.parseInt(idLinha), idLinhaCoordenadaInt = 0;
@@ -166,7 +175,7 @@ public class Leitura{
 		ArrayList<Linha> lista = preparaLinha();
 		
 		
-	}
+	}*/
 	
 	
 }
