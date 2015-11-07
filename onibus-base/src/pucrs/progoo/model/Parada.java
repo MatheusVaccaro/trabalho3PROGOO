@@ -49,6 +49,12 @@ public class Parada {
 	public void setTerminal(char terminal) {
 		this.terminal = terminal;
 	}
+
+	@Override
+	public String toString() {
+		return "Parada [idParada=" + idParada + ", longitude=" + longitude
+				+ ", latitude=" + latitude + ", terminal=" + terminal + "]";
+	}
 	
 	
 }

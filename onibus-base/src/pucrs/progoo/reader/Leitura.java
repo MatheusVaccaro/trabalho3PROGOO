@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 import pucrs.progoo.model.Linha;
@@ -18,18 +20,20 @@ import java.util.ArrayList;
 
 
 
+
+
 public class Leitura{
 	
 	//testes
 	public static void main(String args[]){
 		System.out.println("teste");
 		try{
-			ArrayList<Linha> lista = preparaLinha();
+			Map<String, Linha> dic = preparaLinha();
 			
-			System.out.println(lista.size());
+			System.out.println(dic.size());
 			
-			for(Linha linha: lista){
-				System.out.println(linha.getNome() + "\t" + linha.getCodigo() + "\t" + linha.getTipo() + "\t" + linha.getIdLinha());
+			for(String key: dic.keySet()){
+				System.out.println(dic.get(key));
 			}		
 		}
 		catch(IOException e){
@@ -39,9 +43,9 @@ public class Leitura{
 	}
 	//
 
-	public static ArrayList<Linha> preparaLinha() throws IOException{
+	public static Map<String, Linha> preparaLinha() throws IOException{
 		
-		ArrayList<Linha> lista = new ArrayList<Linha>();		
+		Map<String, Linha> dic = new HashMap<String, Linha>();		
 		Path path = Paths.get("linhas.csv");
 		
 		try(Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf-8")))){
@@ -60,11 +64,11 @@ public class Leitura{
 				if(tipo.equals("O")){
 					char tipoChar = tipo.charAt(0);
 					Linha linha = new Linha(id, nome, codigo, tipoChar);
-					lista.add(linha);					
+					dic.put(id, linha);					
 				}
 				
 			}
-		return lista;
+		return dic;
 		}
 	}
 	

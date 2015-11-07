@@ -1,32 +1,22 @@
 package pucrs.progoo.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Linha {
 	private ArrayList<Coordenada> coordenadas;
-	private ArrayList<Parada> paradas;
+	private Map<String, Parada> paradas;
 	private String idLinha;
 	private String nome;
 	private String codigo;
 	private char tipo;
 	
-	public Linha() {
-		
-	}
-	
-	public Linha(ArrayList<Coordenada> coordenadas, ArrayList<Parada> paradas,
-			String idLinha, String nome, String codigo, char tipo) {
-
-		this.coordenadas = coordenadas;
-		this.paradas = paradas;
-		this.idLinha = idLinha;
-		this.nome = nome;
-		this.codigo = codigo;
-		this.tipo = tipo;
-	}
 	
 	public Linha(String idLinha, String nome, String codigo, char tipo) {
-
+		
+		this.paradas = new HashMap<>();
+		this.coordenadas = new ArrayList<>();
 		this.idLinha = idLinha;
 		this.nome = nome;
 		this.codigo = codigo;
@@ -42,11 +32,11 @@ public class Linha {
 		this.coordenadas = coordenadas;
 	}
 
-	public ArrayList<Parada> getParadas() {
+	public Map<String, Parada> getParadas() {
 		return paradas;
 	}
 
-	public void setParadas(ArrayList<Parada> paradas) {
+	public void setParadas(Map<String, Parada> paradas) {
 		this.paradas = paradas;
 	}
 	
@@ -80,6 +70,14 @@ public class Linha {
 
 	public void setTipo(char tipo) {
 		this.tipo = tipo;
+	}
+
+	@Override
+	public String toString() {
+		return "Linha [coordenadas=" + coordenadas + ", paradas=" + paradas
+				+ ", idLinha=" + idLinha + ", nome=" + nome + ", codigo="
+				+ codigo + ", tipo=" + tipo + "]";
 	}	
+	
 	
 }

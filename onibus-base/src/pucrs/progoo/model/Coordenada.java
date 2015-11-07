@@ -29,5 +29,12 @@ public class Coordenada {
 	public void setLongitude(double longitude) {
 		this.longitude = longitude;
 	}
+
+	@Override
+	public String toString() {
+		return "Coordenada [latitude=" + latitude + ", longitude=" + longitude
+				+ "]";
+	}
 		
+	
 }
