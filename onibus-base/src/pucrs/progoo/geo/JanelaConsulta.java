@@ -10,8 +10,11 @@ import java.awt.Color;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,6 +23,9 @@ import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
 //import pucrs.progoo.Linhas;
+
+
+
 
 
 
@@ -36,6 +42,8 @@ import pucrs.progoo.model.Coordenada;
 import pucrs.progoo.model.Linha;
 import pucrs.progoo.model.Parada;
 import pucrs.progoo.reader.*;
+
+import java.awt.FlowLayout;
 
 /**
  *
@@ -70,9 +78,9 @@ public class JanelaConsulta extends javax.swing.JFrame {
         getContentPane().add(painelMapa, BorderLayout.CENTER);
         
         painelLateral = new JPanel();
-        getContentPane().add(painelLateral, BorderLayout.WEST);
+        getContentPane().add(painelLateral, BorderLayout.SOUTH);
         
-        JButton btnNewButton = new JButton("Consulta1");
+        JButton btnNewButton = new JButton("Consulta 1");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		consulta1(e);
@@ -80,13 +88,23 @@ public class JanelaConsulta extends javax.swing.JFrame {
         });
         painelLateral.add(btnNewButton);
         
-        JButton btnNewButton2 = new JButton("Consulta2");
+        JButton btnNewButton2 = new JButton("Consulta 2");
         btnNewButton2.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		consulta2(e);
         	}
         });
         painelLateral.add(btnNewButton2);
+        
+        JButton btnNewButton4 = new JButton("Consulta 4");
+        btnNewButton4.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		consulta4(e);
+        	}
+        });
+        painelLateral.add(btnNewButton4);
+        
+        painelLateral.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         
         this.setSize(800,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
@@ -154,9 +172,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         // Exemplo de uso:
         try{
-        	String idParada = "3775";
-	        Map<String, Parada> dicParadas = Leitura.preparaParada();
-	        Parada parada = dicParadas.get(idParada);
+        	String idParada = "4133";
 	        
 	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
 	        
@@ -167,13 +183,57 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        	Linha linha = dicLinhas.get(idLinha);
 	        	
 	        	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
-	        	if(dicParadaDaLinha.get(idParada) != null){ //significa que a Linha passa na Parada
+	        	if(dicParadaDaLinha.containsKey(idParada)){ //significa que a Linha passa na Parada
 	        		
 	        		//não tenho certeza que operação fazer aqui
 	        		//XXX mudar esse sysout
 	        		System.out.println(linha.getNome() + "\t" + linha.getIdLinha());
 	            	//
 	        	}
+	        }
+        }
+        catch(IOException e){
+        	e.printStackTrace();
+        	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
+        }
+
+    }
+    
+    private void consulta4(java.awt.event.ActionEvent evt) {
+
+        // Para obter um ponto clicado no mapa, usar como segue:
+    	GeoPosition pos = gerenciador.getPosicao();     
+
+        // Lista para armazenar o resultado da consulta
+        List<MyWaypoint> lstPoints = new ArrayList<>();
+        
+        // Exemplo de uso:
+        try{
+        	Set<String> listaLinhasQuePassamNasParadas = new LinkedHashSet<>();
+        	ArrayList<String> listaParadas = new ArrayList<>();
+        	listaParadas.add("4133");
+        	listaParadas.add("3809");
+        	
+        	Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+        
+	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
+	        	Linha linha = dicLinhas.get(idLinha);
+	        	
+	        	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
+	        	
+	        	for(String idParada: listaParadas){
+		        	if(dicParadaDaLinha.containsKey(idParada)){ //significa que a Linha passa na Parada
+		        		
+		        		//não tenho certeza que operação fazer aqui
+		        		//XXX dar uma olhada aqui
+		        		listaLinhasQuePassamNasParadas.add(linha.getNome() + " - " + linha.getIdLinha());
+		            	//
+		        	}
+	        	}
+	        }
+	        System.out.println("Lista de Linhas que passam nas paradas " + listaParadas);
+	        for(String palavra: listaLinhasQuePassamNasParadas){
+	        	System.out.println(palavra);
 	        }
         }
         catch(IOException e){
