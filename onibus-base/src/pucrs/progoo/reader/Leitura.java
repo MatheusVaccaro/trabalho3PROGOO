@@ -66,7 +66,7 @@ public class Leitura{
 				String codigo = sc.next();
 				codigo = codigo.substring(1, codigo.length()-1);
 				String tipo = sc.next();
-				tipo = tipo.substring(1, tipo.length()-1);
+				tipo = tipo.substring(1, tipo.length()-2); //neste caso, o formato de entrada no arquivo é, por exemplo, " 'O'' "
 
 				if(tipo.equals("O")){
 					char tipoChar = tipo.charAt(0);
