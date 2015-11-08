@@ -120,8 +120,8 @@ public class Leitura{
 	}
 
 	
-	private static Map<String, Parada> preparaParada() throws IOException{
-		Map<String, Parada> dic = new LinkedHashMap<>();
+	public static Map<String, Parada> preparaParada() throws IOException{
+		Map<String, Parada> dic = new HashMap<>();
 		Path path = Paths.get("paradas.csv");
 				
 		try(Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf-8")))){

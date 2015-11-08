@@ -11,6 +11,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -20,10 +21,21 @@ import org.jxmapviewer.viewer.GeoPosition;
 
 //import pucrs.progoo.Linhas;
 
+
+
+
+
+
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.IOException;
+
+import pucrs.progoo.model.Coordenada;
+import pucrs.progoo.model.Linha;
+import pucrs.progoo.model.Parada;
+import pucrs.progoo.reader.*;
 
 /**
  *
@@ -36,6 +48,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
     
     private JPanel painelMapa;
     private JPanel painelLateral;
+    
 
     /**
      * Creates new form JanelaConsulta
@@ -62,7 +75,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton = new JButton("Consulta");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		consulta(e);
+        		consulta1(e);
         	}
         });
         painelLateral.add(btnNewButton);
@@ -71,7 +84,109 @@ public class JanelaConsulta extends javax.swing.JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
-    private void consulta(java.awt.event.ActionEvent evt) {
+    private void consulta1(java.awt.event.ActionEvent evt) {
+
+        // Para obter um ponto clicado no mapa, usar como segue:
+    	GeoPosition pos = gerenciador.getPosicao();     
+
+        // Lista para armazenar o resultado da consulta
+        List<MyWaypoint> lstPoints = new ArrayList<>();
+        
+        // Exemplo de uso:
+        try{
+	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+	        
+	        Linha linha = dicLinhas.get("128516");
+	        Map<String, Parada> dicParadas = linha.getParadas();
+	        
+	        for(String idParada: dicParadas.keySet()){
+	        	Parada parada = dicParadas.get(idParada);
+	        	GeoPosition loc = new GeoPosition(parada.getLatitude(), parada.getLongitude());
+	        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), loc));
+	        }
+	        
+	        
+	        // Informa o resultado para o gerenciador
+	        gerenciador.setPontos(lstPoints);
+	        
+	        
+	        // Exemplo: criando um traçado
+	        Tracado tr = new Tracado();
+	        
+	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
+	        
+	        for(Coordenada coordenada: listaCoordenadas){
+	        	GeoPosition loc = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
+	        	tr.addPonto(loc);
+	        	tr.setCor(Color.CYAN);
+	        }
+	        
+	        
+	        // E adicionando o traçado...
+	        gerenciador.addTracado(tr);
+	        
+	        
+	        this.repaint();
+        }
+        catch(IOException e){
+        	e.printStackTrace();
+        	System.out.println("Erro ao localizar paradas");
+        }
+
+    }
+    
+    private void consulta2(java.awt.event.ActionEvent evt) {
+
+        // Para obter um ponto clicado no mapa, usar como segue:
+    	GeoPosition pos = gerenciador.getPosicao();     
+
+        // Lista para armazenar o resultado da consulta
+        List<MyWaypoint> lstPoints = new ArrayList<>();
+        
+        // Exemplo de uso:
+        try{
+	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+	        
+	        Linha linha = dicLinhas.get("128516");
+	        Map<String, Parada> dicParadas = linha.getParadas();
+	        
+	        for(String idParada: dicParadas.keySet()){
+	        	Parada parada = dicParadas.get(idParada);
+	        	GeoPosition loc = new GeoPosition(parada.getLatitude(), parada.getLongitude());
+	        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), loc));
+	        }
+	        
+	        
+	        // Informa o resultado para o gerenciador
+	        gerenciador.setPontos(lstPoints);
+	        
+	        
+	        // Exemplo: criando um traçado
+	        Tracado tr = new Tracado();
+	        
+	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
+	        
+	        for(Coordenada coordenada: listaCoordenadas){
+	        	GeoPosition loc = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
+	        	tr.addPonto(loc);
+	        	tr.setCor(Color.CYAN);
+	        }
+	        
+	        
+	        // E adicionando o traçado...
+	        gerenciador.addTracado(tr);
+	        
+	        
+	        this.repaint();
+        }
+        catch(IOException e){
+        	e.printStackTrace();
+        	System.out.println("Erro ao localizar paradas");
+        }
+
+    }
+    
+    /*private void consultaOriginal(java.awt.event.ActionEvent evt) {
 
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
@@ -85,6 +200,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
         GeoPosition loc2 = new GeoPosition(-30.08, -51.22); // ex: localização de uma parada
         lstPoints.add(new MyWaypoint(Color.BLUE, "Teste", loc));
         lstPoints.add(new MyWaypoint(Color.BLACK, "Teste 2", loc2));
+        
+        
 
         // Informa o resultado para o gerenciador
         gerenciador.setPontos(lstPoints);
@@ -110,7 +227,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         this.repaint();
 
-    }
+    }*/
     
     private class EventosMouse extends MouseAdapter
     {
