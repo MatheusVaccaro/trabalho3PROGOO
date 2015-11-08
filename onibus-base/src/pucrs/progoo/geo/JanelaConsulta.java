@@ -72,13 +72,21 @@ public class JanelaConsulta extends javax.swing.JFrame {
         painelLateral = new JPanel();
         getContentPane().add(painelLateral, BorderLayout.WEST);
         
-        JButton btnNewButton = new JButton("Consulta");
+        JButton btnNewButton = new JButton("Consulta1");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		consulta1(e);
         	}
         });
         painelLateral.add(btnNewButton);
+        
+        JButton btnNewButton2 = new JButton("Consulta2");
+        btnNewButton2.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		consulta2(e);
+        	}
+        });
+        painelLateral.add(btnNewButton2);
         
         this.setSize(800,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
@@ -96,7 +104,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
         try{
 	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
 	        
-	        Linha linha = dicLinhas.get("128516");
+	        //XXX CHAVE QUANDO O MENU DE OPCOES FOR IMPLEMENTADO
+	        Linha linha = dicLinhas.get("127815");
 	        Map<String, Parada> dicParadas = linha.getParadas();
 	        
 	        for(String idParada: dicParadas.keySet()){
@@ -145,43 +154,31 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         // Exemplo de uso:
         try{
+        	String idParada = "3775";
+	        Map<String, Parada> dicParadas = Leitura.preparaParada();
+	        Parada parada = dicParadas.get(idParada);
+	        
 	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
 	        
-	        Linha linha = dicLinhas.get("128516");
-	        Map<String, Parada> dicParadas = linha.getParadas();
+	        //retirar esse sysout
+	        System.out.println("Linhas que passam na parada " + idParada);
 	        
-	        for(String idParada: dicParadas.keySet()){
-	        	Parada parada = dicParadas.get(idParada);
-	        	GeoPosition loc = new GeoPosition(parada.getLatitude(), parada.getLongitude());
-	        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), loc));
+	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
+	        	Linha linha = dicLinhas.get(idLinha);
+	        	
+	        	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
+	        	if(dicParadaDaLinha.get(idParada) != null){ //significa que a Linha passa na Parada
+	        		
+	        		//n„o tenho certeza que operaÁ„o fazer aqui
+	        		//XXX mudar esse sysout
+	        		System.out.println(linha.getNome() + "\t" + linha.getIdLinha());
+	            	//
+	        	}
 	        }
-	        
-	        
-	        // Informa o resultado para o gerenciador
-	        gerenciador.setPontos(lstPoints);
-	        
-	        
-	        // Exemplo: criando um tra√ßado
-	        Tracado tr = new Tracado();
-	        
-	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
-	        
-	        for(Coordenada coordenada: listaCoordenadas){
-	        	GeoPosition loc = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
-	        	tr.addPonto(loc);
-	        	tr.setCor(Color.CYAN);
-	        }
-	        
-	        
-	        // E adicionando o tra√ßado...
-	        gerenciador.addTracado(tr);
-	        
-	        
-	        this.repaint();
         }
         catch(IOException e){
         	e.printStackTrace();
-        	System.out.println("Erro ao localizar paradas");
+        	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
         }
 
     }
