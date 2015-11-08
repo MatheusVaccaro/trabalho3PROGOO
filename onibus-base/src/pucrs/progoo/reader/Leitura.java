@@ -9,11 +9,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 import pucrs.progoo.model.Linha;
 import pucrs.progoo.model.Coordenada;
+import pucrs.progoo.model.Parada;
 
 import java.util.ArrayList;
 
@@ -28,15 +30,18 @@ public class Leitura{
 	public static void main(String args[]){
 		System.out.println("teste");
 		try{
-			Map<String, Linha> dic = preparaLinha();
-			
-			preparaCoordenada(dic);
-			
+			Map<String, Linha> dic = geraLinhas();
+					
 			System.out.println(dic.size());
 			
 			for(String key: dic.keySet()){
 				System.out.println(dic.get(key));
-			}		
+				Linha linha = dic.get(key);
+				System.out.println(linha.getNome());
+				System.out.println(linha.getCodigo());
+				System.out.println(linha.getTipo());
+				break;
+			}
 		}
 		catch(IOException e){
 			System.out.println("Erro de E/S");
@@ -57,11 +62,11 @@ public class Leitura{
 			while(sc.hasNext()){
 				String id = sc.next();
 				String nome = sc.next();
-				nome = nome.substring(1, nome.length()-2); //length()-2 pega a penultima posição da string
+				nome = nome.substring(1, nome.length()-1); //length()-1 pega a penultima posição da string devido ao formato da informação provida pelo arquivo linhas.csv
 				String codigo = sc.next();
-				codigo = codigo.substring(1, codigo.length()-2);
+				codigo = codigo.substring(1, codigo.length()-1);
 				String tipo = sc.next();
-				tipo = tipo.substring(1, tipo.length()-2);
+				tipo = tipo.substring(1, tipo.length()-1);
 
 				if(tipo.equals("O")){
 					char tipoChar = tipo.charAt(0);
@@ -86,13 +91,15 @@ public class Leitura{
 			while(sc.hasNext()){
 				sc.next(); //pula o Id da coordenada
 				
-				//REVISAR ESSES PARSES. EXISTE A POSSIBILIDADE DAS CASAS DECIMAIS ESTAREM SENDO PERDIDAS
 				String latitude = sc.next();
-				//double latitudeDouble = Double.parseDouble(latitude);
+				latitude = latitude.replaceAll(",", ".");
+				double latitudeDouble = Double.parseDouble(latitude);
+				
 				String longitude = sc.next();
-				//double longitudeDouble = Double.parseDouble(longitude);
-				//
-								
+				longitude = longitude.replaceAll(",", ".");
+				double longitudeDouble = Double.parseDouble(longitude);
+				
+				
 				String idLinha = sc.next();
 				
 				/*
@@ -103,7 +110,7 @@ public class Leitura{
 				
 				Linha linha = dic.get(idLinha);
 				if(linha != null){
-					Coordenada novaCoordenada = new Coordenada(latitude, longitude);
+					Coordenada novaCoordenada = new Coordenada(latitudeDouble, longitudeDouble);
 					ArrayList<Coordenada> lista = linha.getCoordenadas();
 					lista.add(novaCoordenada);
 					dic.put(idLinha, linha);
@@ -111,44 +118,45 @@ public class Leitura{
 			}
 		}
 	}
+
 	
-	/*//esse método precisa da estrutura criada por preparaParadaLinha() para funcionar
-	//obs: preparaParada() não foi implementado ainda
-	public static ArrayList<Parada> preparaParada(String idLinha) throws IOException{
-		int idLinhaInt = Integer.parseInt(idLinha), idLinhaCoordenadaInt = 0;
-		ArrayList<Coordenada> lista = new ArrayList<Coordenada>();		
+	public static Map<String, Parada> preparaParada() throws IOException{
+		Map<String, Parada> dic = new LinkedHashMap<>();
 		Path path = Paths.get("paradas.csv");
 				
 		try(Scanner sc = new Scanner(Files.newBufferedReader(path, Charset.forName("utf-8")))){
 			sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
 			String header = sc.nextLine(); // pula cabecalho
-			
-			do{
-				sc.next(); //pula o Id da coordenada
-				String latitude = sc.next();
-				int latitudeInt = Integer.parseInt(latitude);
+					
+			while(sc.hasNext()){
+				String idParada = sc.next();
+				sc.next(); // pula o código da parada
+				
 				String longitude = sc.next();
-				int longitudeInt = Integer.parseInt(longitude);
-				String idLinhaCoordenada = sc.next();
-				idLinhaCoordenadaInt = Integer.parseInt(idLinhaCoordenada);
+				longitude = longitude.replaceAll(",", ".");
+				double longitudeDouble = Double.parseDouble(longitude);
 				
-				if(idLinhaCoordenadaInt == idLinhaInt){
-					Coordenada coordenada = new Coordenada(latitudeInt, longitudeInt);
-					lista.add(coordenada);
-				}
+				String latitude = sc.next();
+				latitude = latitude.replaceAll(",", ".");
+				double latitudeDouble = Double.parseDouble(latitude);
 				
-			}while(sc.hasNext() && idLinhaCoordenadaInt <= idLinhaInt);
+				String terminal = sc.next();
+				char terminalChar = terminal.charAt(1);
 				
+				Parada parada = new Parada(idParada, longitudeDouble, latitudeDouble, terminalChar);
+				
+				dic.put(idParada, parada);
+			}
 		
-		return lista;
+		return dic;
 		}
 	}
 	
 	
-	
-	//hashmap dos brother VAMO CLAN
-	public static int[][] preparaParadaLinha() throws IOException{
 
+	public static Map<String, ArrayList<String>> preparaParadaLinha() throws IOException{
+
+		Map<String, ArrayList<String>> dic = new HashMap<>();
 		
 		Path path = Paths.get("paradalinha.csv");
 				
@@ -156,26 +164,65 @@ public class Leitura{
 			sc.useDelimiter("[;\n]"); // separadores: ; e nova linha
 			String header = sc.nextLine(); // pula cabecalho
 			
+			String idLinha = sc.next(), novoIdLinha = null;
+			
 			while(sc.hasNext()){
-				String idLinha = sc.next();
-				int idLinhaInt = Integer.parseInt(idLinha);
-				String idParada = sc.next();
-				int idParadaInt = Integer.parseInt(idParada);				
 
+				ArrayList<String> lista = new ArrayList<>();
 				
-				
+				while(sc.hasNext()){
+					
+					String idParada = sc.next();
+					idParada = idParada.substring(0, idParada.length()-1);
+					lista.add(idParada);
+					if(sc.hasNext()){
+						novoIdLinha = sc.next();
+					}
+					
+					if(!novoIdLinha.equals(idLinha)){
+						dic.put(idLinha, lista);
+						idLinha = novoIdLinha;
+						break;
+					}
+					
+					if(!sc.hasNext()){
+						dic.put(idLinha, lista);
+					}
+				}
 			}
-		return lista;
+		return dic;
 		}
 	}
 	
+	public static void insereParada(Map<String, ArrayList<String>> paradaLinha, Map<String, Parada> paradas, Map<String, Linha> linhas) throws IOException{
+		
+		for(String idLinha: paradaLinha.keySet()){
+			Linha linha = linhas.get(idLinha);
+			ArrayList<String> listaParadaLinha = paradaLinha.get(idLinha);
+			Map<String, Parada> dicParada = linha.getParadas();
+			
+			for(int i = 0; i < listaParadaLinha.size(); i++){
+				String idParada = listaParadaLinha.get(i);
+				Parada parada = paradas.get(idParada);
+				
+				dicParada.put(idParada, parada);
+				
+			}
+			linha.setParadas(dicParada);
+		}
+	}
 	
-	//esse método vai usar os três criados acima, que terão chamada privada ao invés de pública futuramente
-	public static ArrayList<Linha> constroiLinhas() throws IOException{
-		ArrayList<Linha> lista = preparaLinha();
+
+	public static Map<String, Linha> geraLinhas() throws IOException{
 		
+		Map<String, Linha> dic = preparaLinha();
+		preparaCoordenada(dic);
+		Map<String, ArrayList<String>> paradaLinha = preparaParadaLinha();
+		Map<String, Parada> parada = preparaParada();
+		insereParada(paradaLinha, parada, dic);
 		
-	}*/
+		return dic;
+	}
 	
 	
 }

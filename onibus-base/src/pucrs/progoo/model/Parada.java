@@ -2,7 +2,7 @@ package pucrs.progoo.model;
 
 public class Parada {
 		
-	private int idParada;
+	private String idParada;
 	private double longitude;
 	private double latitude;
 	private char terminal;
@@ -11,18 +11,18 @@ public class Parada {
 		
 	}
 	
-	public Parada(int idParada, double longitude, double latitude, char terminal){		
+	public Parada(String idParada, double longitude, double latitude, char terminal){		
 		this.idParada = idParada;		
 		this.longitude = longitude;
 		this.latitude = latitude;
 		this.terminal = terminal;
 	}	
 
-	public int getIdParada() {
+	public String getIdParada() {
 		return idParada;
 	}
 
-	public void setIdParada(int idParada) {
+	public void setIdParada(String idParada) {
 		this.idParada = idParada;
 	}
 
