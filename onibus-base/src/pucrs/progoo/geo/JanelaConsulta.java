@@ -128,7 +128,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
 	        
 	        //XXX CHAVE QUANDO O MENU DE OPCOES FOR IMPLEMENTADO
-	        Linha linha = dicLinhas.get("128184");
+	        Linha linha = dicLinhas.get("127633");
 	        Map<String, Parada> dicParadas = linha.getParadas();
 	        
 	        for(String idParada: dicParadas.keySet()){
@@ -225,7 +225,22 @@ public class JanelaConsulta extends javax.swing.JFrame {
 		        	for(Coordenada coordenada: coordenadas){
 		        		GeoPosition posicao = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
 		        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.5){
-		        			System.out.println(linha.getNome() + " - " + linha.getIdLinha());
+		        			//System.out.println(linha.getNome() + " - " + linha.getIdLinha());
+		        			
+		        			Tracado tr = new Tracado();
+		        	        
+		        	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
+		        	        
+		        	        for(Coordenada coordenada2: listaCoordenadas){
+		        	        	GeoPosition loc = new GeoPosition(coordenada2.getLatitude(), coordenada2.getLongitude());
+		        	        	tr.addPonto(loc);
+		        	        	tr.setCor(Color.CYAN);
+		        	        }
+		        	        gerenciador.addTracado(tr);
+		        	        
+		        	        
+		        	        this.repaint();
+		        			
 		        			break;
 		        		}
 		        	}

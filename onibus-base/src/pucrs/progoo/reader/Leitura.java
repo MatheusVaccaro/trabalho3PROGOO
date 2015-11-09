@@ -203,9 +203,10 @@ public class Leitura{
 			
 			for(int i = 0; i < listaParadaLinha.size(); i++){
 				String idParada = listaParadaLinha.get(i);
-				Parada parada = paradas.get(idParada);
-				
-				dicParada.put(idParada, parada);
+				if(paradas.containsKey(idParada)){
+					Parada parada = paradas.get(idParada);
+					dicParada.put(idParada, parada);
+				}
 				
 			}
 			linha.setParadas(dicParada);
