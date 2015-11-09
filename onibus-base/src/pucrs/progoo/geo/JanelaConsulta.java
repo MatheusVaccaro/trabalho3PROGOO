@@ -96,6 +96,14 @@ public class JanelaConsulta extends javax.swing.JFrame {
         });
         painelLateral.add(btnNewButton2);
         
+        JButton btnNewButton3 = new JButton("Consulta 3");
+        btnNewButton3.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		consulta3(e);
+        	}
+        });
+        painelLateral.add(btnNewButton3);
+        
         JButton btnNewButton4 = new JButton("Consulta 4");
         btnNewButton4.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -111,10 +119,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
     }
 
     private void consulta1(java.awt.event.ActionEvent evt) {
-
-        // Para obter um ponto clicado no mapa, usar como segue:
-    	GeoPosition pos = gerenciador.getPosicao();     
-
+  
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
@@ -123,7 +128,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
 	        
 	        //XXX CHAVE QUANDO O MENU DE OPCOES FOR IMPLEMENTADO
-	        Linha linha = dicLinhas.get("127815");
+	        Linha linha = dicLinhas.get("128184");
 	        Map<String, Parada> dicParadas = linha.getParadas();
 	        
 	        for(String idParada: dicParadas.keySet()){
@@ -195,6 +200,42 @@ public class JanelaConsulta extends javax.swing.JFrame {
         catch(IOException e){
         	e.printStackTrace();
         	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
+        }
+
+    }
+    
+    private void consulta3(java.awt.event.ActionEvent evt) {
+
+        // Para obter um ponto clicado no mapa, usar como segue:
+    	GeoPosition pos = gerenciador.getPosicao();     
+
+        // Lista para armazenar o resultado da consulta
+        List<MyWaypoint> lstPoints = new ArrayList<>();
+        
+        if(pos != null){
+	        try{
+	        	Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+		        
+		        //retirar esse sysout
+		        System.out.println("Linhas que passam perto do ponto selecionado");
+		        
+		        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
+		        	Linha linha = dicLinhas.get(idLinha);
+		        	ArrayList<Coordenada> coordenadas = linha.getCoordenadas();
+		        	for(Coordenada coordenada: coordenadas){
+		        		GeoPosition posicao = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
+		        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.5){
+		        			System.out.println(linha.getNome() + " - " + linha.getIdLinha());
+		        			break;
+		        		}
+		        	}
+		        	
+		        }
+	        }
+	        catch(IOException e){
+	        	e.printStackTrace();
+	        	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
+	        }
         }
 
     }
