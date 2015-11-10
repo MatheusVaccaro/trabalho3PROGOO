@@ -74,9 +74,7 @@ public class Linha {
 
 	@Override
 	public String toString() {
-		return "Linha [coordenadas=" + coordenadas + ", paradas=" + paradas
-				+ ", idLinha=" + idLinha + ", nome=" + nome + ", codigo="
-				+ codigo + ", tipo=" + tipo + "]";
+		return this.nome + " - " + this.idLinha;
 	}	
 	
 	

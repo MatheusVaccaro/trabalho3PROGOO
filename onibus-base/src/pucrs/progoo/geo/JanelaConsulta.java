@@ -48,11 +48,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
 
     private GerenciadorMapa gerenciador;
     private EventosMouse mouse;
-    
     private JPanel painelMapa;
     private JPanel painelInferior;
-    
     private Map<String, Linha> dicLinhas;
+    private DefaultListModel<Linha> listaLinhas;
+    private DefaultListModel<Linha> listaPadrao;
+    private JList<Linha> list;
 
     /**
      * Creates new form JanelaConsulta
@@ -64,6 +65,13 @@ public class JanelaConsulta extends javax.swing.JFrame {
     		dicLinhas = Leitura.geraLinhas();
     	} catch(IOException e){
     		System.err.println("Erro na geração das linhas de ônibus");
+    	}
+    	
+    	listaLinhas = new DefaultListModel<>();
+    	
+    	for(String key: dicLinhas.keySet()){
+    		Linha linha = dicLinhas.get(key);
+    		listaLinhas.addElement(linha);
     	}
     	
         GeoPosition poa = new GeoPosition(-30.05, -51.18);
@@ -81,6 +89,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         painelInferior = new JPanel();
         getContentPane().add(painelInferior, BorderLayout.SOUTH);
         
+        //botões
         JButton btnNewButton = new JButton("Consulta 1");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -123,23 +132,24 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         painelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         
-        JPanel panelListagem = new JPanel();
-        getContentPane().add(panelListagem, BorderLayout.WEST);
         
-        DefaultListModel model = new DefaultListModel();
-        JList list = new JList(model);
+        //Criação da lista de resultados/linhas
+        JPanel panel = new JPanel();
+        getContentPane().add(panel, BorderLayout.WEST);
+        JScrollPane scrollPane = new JScrollPane();
+        panel.add(scrollPane);
+        list = new JList();
+        scrollPane.setViewportView(list);
+
         
-        
-        
-        
-        panelListagem.add(list);
         
         this.setSize(800,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
     private void consulta1(java.awt.event.ActionEvent evt) {
-  
+    	this.list.setModel(listaLinhas);
+    	
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
