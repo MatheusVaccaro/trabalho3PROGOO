@@ -56,8 +56,6 @@ public class Leitura{
 				String codigo = sc.next();
 				codigo = codigo.substring(1, codigo.length()-1);
 				String tipo = sc.next();
-				//tipo = tipo.substring(1, tipo.length()-2); //neste caso, o formato de entrada no arquivo é, por exemplo, " 'O'' "
-				//XXX teste para ver se o bug de leitura nos outros computadores é resolvido
 				tipo = Character.toString(tipo.charAt(1));
 			
 				if(tipo.equals("O")){

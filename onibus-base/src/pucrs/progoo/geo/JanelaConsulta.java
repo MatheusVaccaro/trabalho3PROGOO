@@ -22,16 +22,6 @@ import javax.swing.JPanel;
 import org.jxmapviewer.JXMapViewer;
 import org.jxmapviewer.viewer.GeoPosition;
 
-//import pucrs.progoo.Linhas;
-
-
-
-
-
-
-
-
-
 import javax.swing.JButton;
 
 import java.awt.event.ActionListener;
@@ -45,6 +35,11 @@ import pucrs.progoo.reader.*;
 
 import java.awt.FlowLayout;
 
+import javax.swing.DefaultListModel;
+import javax.swing.JRadioButtonMenuItem;
+import javax.swing.JScrollPane;
+import javax.swing.JList;
+
 /**
  *
  * @author Marcelo Cohen
@@ -55,8 +50,9 @@ public class JanelaConsulta extends javax.swing.JFrame {
     private EventosMouse mouse;
     
     private JPanel painelMapa;
-    private JPanel painelLateral;
+    private JPanel painelInferior;
     
+    private Map<String, Linha> dicLinhas;
 
     /**
      * Creates new form JanelaConsulta
@@ -64,7 +60,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
     public JanelaConsulta() {
     	super();    	
         //initComponents();
-
+    	try{
+    		dicLinhas = Leitura.geraLinhas();
+    	} catch(IOException e){
+    		System.err.println("Erro na geração das linhas de ônibus");
+    	}
+    	
         GeoPosition poa = new GeoPosition(-30.05, -51.18);
         gerenciador = new GerenciadorMapa(poa, GerenciadorMapa.FonteImagens.VirtualEarth);
         mouse = new EventosMouse();        		
@@ -77,8 +78,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
                 
         getContentPane().add(painelMapa, BorderLayout.CENTER);
         
-        painelLateral = new JPanel();
-        getContentPane().add(painelLateral, BorderLayout.SOUTH);
+        painelInferior = new JPanel();
+        getContentPane().add(painelInferior, BorderLayout.SOUTH);
         
         JButton btnNewButton = new JButton("Consulta 1");
         btnNewButton.addActionListener(new ActionListener() {
@@ -86,7 +87,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         		consulta1(e);
         	}
         });
-        painelLateral.add(btnNewButton);
+        painelInferior.add(btnNewButton);
         
         JButton btnNewButton2 = new JButton("Consulta 2");
         btnNewButton2.addActionListener(new ActionListener() {
@@ -94,7 +95,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         		consulta2(e);
         	}
         });
-        painelLateral.add(btnNewButton2);
+        painelInferior.add(btnNewButton2);
         
         JButton btnNewButton3 = new JButton("Consulta 3");
         btnNewButton3.addActionListener(new ActionListener() {
@@ -102,7 +103,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         		consulta3(e);
         	}
         });
-        painelLateral.add(btnNewButton3);
+        painelInferior.add(btnNewButton3);
         
         JButton btnNewButton4 = new JButton("Consulta 4");
         btnNewButton4.addActionListener(new ActionListener() {
@@ -110,9 +111,28 @@ public class JanelaConsulta extends javax.swing.JFrame {
         		consulta4(e);
         	}
         });
-        painelLateral.add(btnNewButton4);
+        painelInferior.add(btnNewButton4);
         
-        painelLateral.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        JButton btnNewButton5 = new JButton("Limpar Mapa");
+        btnNewButton5.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		limparMapa(e);
+        	}
+        });
+        painelInferior.add(btnNewButton5);
+        
+        painelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+        
+        JPanel panelListagem = new JPanel();
+        getContentPane().add(panelListagem, BorderLayout.WEST);
+        
+        DefaultListModel model = new DefaultListModel();
+        JList list = new JList(model);
+        
+        
+        
+        
+        panelListagem.add(list);
         
         this.setSize(800,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
@@ -176,33 +196,30 @@ public class JanelaConsulta extends javax.swing.JFrame {
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
         // Exemplo de uso:
-        try{
-        	String idParada = "4133";
-	        
-	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-	        
-	        //retirar esse sysout
-	        System.out.println("Linhas que passam na parada " + idParada);
-	        
-	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
-	        	Linha linha = dicLinhas.get(idLinha);
-	        	
-	        	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
-	        	if(dicParadaDaLinha.containsKey(idParada)){ //significa que a Linha passa na Parada
-	        		
-	        		//não tenho certeza que operação fazer aqui
-	        		//XXX mudar esse sysout
-	        		System.out.println(linha.getNome() + "\t" + linha.getIdLinha());
-	            	//
-	        	}
-	        }
+        
+    	String idParada = "4133";
+        
+        // Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+        
+        //retirar esse sysout
+        System.out.println("Linhas que passam na parada " + idParada);
+        
+        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
+        	Linha linha = dicLinhas.get(idLinha);
+        	
+        	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
+        	if(dicParadaDaLinha.containsKey(idParada)){ //significa que a Linha passa na Parada
+        		
+        		//não tenho certeza que operação fazer aqui
+        		//XXX mudar esse sysout
+        		System.out.println(linha.getNome() + "\t" + linha.getIdLinha());
+            	//
+        	}
         }
-        catch(IOException e){
-        	e.printStackTrace();
-        	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
-        }
-
     }
+        
+
+    
     
     private void consulta3(java.awt.event.ActionEvent evt) {
 
@@ -213,65 +230,59 @@ public class JanelaConsulta extends javax.swing.JFrame {
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
         if(pos != null){
-	        try{
-	        	Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-		        
-		        //retirar esse sysout
-		        System.out.println("Linhas que passam perto do ponto selecionado");
-		        
-		        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
-		        	Linha linha = dicLinhas.get(idLinha);
-		        	ArrayList<Coordenada> coordenadas = linha.getCoordenadas();
-		        	for(Coordenada coordenada: coordenadas){
-		        		GeoPosition posicao = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
-		        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.5){
-		        			//System.out.println(linha.getNome() + " - " + linha.getIdLinha());
-		        			
-		        			Tracado tr = new Tracado();
-		        	        
-		        	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
-		        	        
-		        	        for(Coordenada coordenada2: listaCoordenadas){
-		        	        	GeoPosition loc = new GeoPosition(coordenada2.getLatitude(), coordenada2.getLongitude());
-		        	        	tr.addPonto(loc);
-		        	        	tr.setCor(Color.CYAN);
-		        	        }
-		        	        gerenciador.addTracado(tr);
-		        	        
-		        	        
-		        	        this.repaint();
-		        			
-		        			break;
-		        		}
-		        	}
-		        	
-		        }
-	        }
-	        catch(IOException e){
-	        	e.printStackTrace();
-	        	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
+	        
+        	//Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+	        
+	        //retirar esse sysout
+	        System.out.println("Linhas que passam perto do ponto selecionado");
+	        
+	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
+	        	Linha linha = dicLinhas.get(idLinha);
+	        	ArrayList<Coordenada> coordenadas = linha.getCoordenadas();
+	        	for(Coordenada coordenada: coordenadas){
+	        		GeoPosition posicao = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
+	        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.5){
+	        			System.out.println(linha.getNome() + " - " + linha.getIdLinha());
+	        			
+	        			Tracado tr = new Tracado();
+	        	        
+	        	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
+	        	        
+	        	        for(Coordenada coordenada2: listaCoordenadas){
+	        	        	GeoPosition loc = new GeoPosition(coordenada2.getLatitude(), coordenada2.getLongitude());
+	        	        	tr.addPonto(loc);
+	        	        	tr.setCor(Color.CYAN);
+	        	        }
+	        	        gerenciador.addTracado(tr);
+	        	        
+	        	        
+	        	        this.repaint();
+	        			
+	        			break;
+	        		}
+	        	}
 	        }
         }
-
     }
+
+    
     
     private void consulta4(java.awt.event.ActionEvent evt) {
 
-        // Para obter um ponto clicado no mapa, usar como segue:
-    	GeoPosition pos = gerenciador.getPosicao();     
-
-        // Lista para armazenar o resultado da consulta
-        List<MyWaypoint> lstPoints = new ArrayList<>();
-        
-        // Exemplo de uso:
-        try{
-        	Set<String> listaLinhasQuePassamNasParadas = new LinkedHashSet<>();
-        	ArrayList<String> listaParadas = new ArrayList<>();
-        	listaParadas.add("4133");
-        	listaParadas.add("3809");
-        	
-        	Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-        
+	    // Para obter um ponto clicado no mapa, usar como segue:
+		GeoPosition pos = gerenciador.getPosicao();     
+	
+	    // Lista para armazenar o resultado da consulta
+	    List<MyWaypoint> lstPoints = new ArrayList<>();
+	    
+	    // Exemplo de uso:
+	    	Set<String> listaLinhasQuePassamNasParadas = new LinkedHashSet<>();
+	    	ArrayList<String> listaParadas = new ArrayList<>();
+	    	listaParadas.add("4133");
+	    	listaParadas.add("3809");
+	    	
+	    	//Map<String, Linha> dicLinhas = Leitura.geraLinhas();
+	    
 	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
 	        	Linha linha = dicLinhas.get(idLinha);
 	        	
@@ -291,13 +302,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        for(String palavra: listaLinhasQuePassamNasParadas){
 	        	System.out.println(palavra);
 	        }
-        }
-        catch(IOException e){
-        	e.printStackTrace();
-        	System.out.println("Erro ao localizar as linhas que passam na parada selecionada");
-        }
-
-    }
+	   } 
+    
     
     /*private void consultaOriginal(java.awt.event.ActionEvent evt) {
 
@@ -342,8 +348,14 @@ public class JanelaConsulta extends javax.swing.JFrame {
 
     }*/
     
-    private class EventosMouse extends MouseAdapter
-    {
+    private void limparMapa(java.awt.event.ActionEvent evt){
+    	List<MyWaypoint> lstPoints = new ArrayList<>();
+    	gerenciador.setPontos(lstPoints);
+    	gerenciador.clear();
+    	this.repaint();
+    }
+    
+    private class EventosMouse extends MouseAdapter{
     	private int lastButton = -1;    	
     	
     	@Override
@@ -360,4 +372,4 @@ public class JanelaConsulta extends javax.swing.JFrame {
     		}
     	}    
     } 	
-}
+ }
