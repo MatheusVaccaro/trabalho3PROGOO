@@ -29,7 +29,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.io.IOException;
 
-import pucrs.progoo.model.Coordenada;
 import pucrs.progoo.model.Linha;
 import pucrs.progoo.model.Parada;
 import pucrs.progoo.reader.*;
@@ -57,6 +56,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
     private JPanel painelMapa;
     private JPanel painelInferior;
     private Map<String, Linha> dicLinhas;
+    private Map<String, Parada> dicParadas;
     private DefaultListModel<Linha> listaLinhas;
     private DefaultListModel<Linha> listaPadrao;
     private JList<Linha> list;
@@ -74,6 +74,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
     		dicLinhas = Leitura.geraLinhas();
     	} catch(IOException e){
     		System.err.println("Erro na geração das linhas de ônibus");
+    	}
+    	
+    	try{
+    		dicParadas = Leitura.preparaParada();
+    	} catch(IOException e){
+    		System.err.println("Erro na geração das paradas de ônibus");
     	}
     	
     	listaLinhas = new DefaultListModel<>();
@@ -124,6 +130,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         btnNewButton3.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
         		panel.setVisible(false);
+        		limparMapa(e);
         		consulta3(e);
         	}
         });
@@ -182,8 +189,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         for(String idParada: dicParadas.keySet()){
         	Parada parada = dicParadas.get(idParada);
-        	GeoPosition loc = new GeoPosition(parada.getLatitude(), parada.getLongitude());
-        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), loc));
+        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
         }
         
         
@@ -194,11 +200,10 @@ public class JanelaConsulta extends javax.swing.JFrame {
         // Exemplo: criando um traÃ§ado
         Tracado tr = new Tracado();
         
-        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
+        ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
         
-        for(Coordenada coordenada: listaCoordenadas){
-        	GeoPosition loc = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
-        	tr.addPonto(loc);
+        for(GeoPosition coordenada: listaCoordenadas){
+        	tr.addPonto(coordenada);
         	tr.setCor(Color.CYAN);
         }
         
@@ -209,27 +214,23 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         this.repaint();
         }
-    
-    
+      
     private void consulta2(java.awt.event.ActionEvent evt) {
 
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
-    	
-    	
-    	
+
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
+        Parada parada = null;
+        for(String paradaKey: dicParadas.keySet()){
+        	parada = dicParadas.get(paradaKey);
+        	if(parada.compareTo(o)){
+        		
+        	}
+        }
         
-        // Exemplo de uso:
-        
-    	String idParada = "4133";
-        
-        // Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-        
-        //retirar esse sysout
-        System.out.println("Linhas que passam na parada " + idParada);
         
         for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
         	Linha linha = dicLinhas.get(idLinha);
@@ -245,9 +246,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         }
     }
         
-
-    
-    
     private void consulta3(java.awt.event.ActionEvent evt) {
 
         // Para obter um ponto clicado no mapa, usar como segue:
@@ -256,32 +254,29 @@ public class JanelaConsulta extends javax.swing.JFrame {
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
-        if(pos != null){
-	        
-        	//Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-	        
-	        //retirar esse sysout
-	        System.out.println("Linhas que passam perto do ponto selecionado");
-	        
+        if(pos != null){	        
 	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
 	        	Linha linha = dicLinhas.get(idLinha);
-	        	ArrayList<Coordenada> coordenadas = linha.getCoordenadas();
-	        	for(Coordenada coordenada: coordenadas){
-	        		GeoPosition posicao = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
-	        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.1){
+	        	ArrayList<GeoPosition> coordenadas = linha.getCoordenadas();
+	        	for(GeoPosition coordenada: coordenadas){
+	        		if(AlgoritmosGeograficos.calcDistancia(pos, coordenada) <= 0.05){
 	        			System.out.println(linha.getNome() + " - " + linha.getIdLinha());
 	        			
 	        			Tracado tr = new Tracado();
 	        	        
-	        	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
-	        	        
-	        	        for(Coordenada coordenada2: listaCoordenadas){
-	        	        	GeoPosition loc = new GeoPosition(coordenada2.getLatitude(), coordenada2.getLongitude());
-	        	        	tr.addPonto(loc);
-	        	        	tr.setCor(criaCor());
+	        	        ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
+	        	        Color corAleatoria = criaCor();
+	        	        for(GeoPosition coordenada2: listaCoordenadas){
+	        	        	
+	        	        	tr.addPonto(coordenada2);
+	        	        	tr.setCor(corAleatoria);
 	        	        }
+	        	        GeoPosition locIn = listaCoordenadas.get(0);
+	        	        GeoPosition locFim = listaCoordenadas.get(listaCoordenadas.size()-1);
+	                	lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locIn));
+	                	lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locFim));
 	        	        gerenciador.addTracado(tr);
-	        	         
+	        	        gerenciador.setPontos(lstPoints);
 	        	        
 	        	        this.repaint();
 	        			
@@ -292,8 +287,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         }
     }
 
-    
-    
     private void consulta4(java.awt.event.ActionEvent evt) {
 
 	    // Para obter um ponto clicado no mapa, usar como segue:
@@ -330,7 +323,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        	System.out.println(palavra);
 	        }
 	   } 
-    
     
     /*private void consultaOriginal(java.awt.event.ActionEvent evt) {
 
@@ -399,7 +391,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
     		}
     	}    
     } 	
-	private class SwingAction extends AbstractAction {
+	
+    private class SwingAction extends AbstractAction {
 		public SwingAction() {
 			putValue(NAME, "SwingAction");
 			putValue(SHORT_DESCRIPTION, "Some short description");
@@ -407,16 +400,16 @@ public class JanelaConsulta extends javax.swing.JFrame {
 		public void actionPerformed(ActionEvent e) {
 		}
 	}
-	  public Color criaCor()
-	  {
+	
+    public Color criaCor(){
 	    Random rand = new Random();
 	 
-	    float r = rand.nextFloat();
-	    float g = rand.nextFloat();
-	    float b = rand.nextFloat();	   	    
+	    float r = rand.nextFloat() / 2f + 0.5f;
+	    float g = rand.nextFloat() / 2f + 0.5f;
+	    float b = rand.nextFloat() / 2f + 0.5f;	   	    
 	 
 	    Color cor = new Color(r, g, b);
 		return cor;
 	    
-	}
- }
+		}
+ 	}

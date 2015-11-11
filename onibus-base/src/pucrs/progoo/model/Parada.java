@@ -1,20 +1,20 @@
 package pucrs.progoo.model;
 
-public class Parada {
+import org.jxmapviewer.viewer.GeoPosition;
+
+public class Parada{
 		
 	private String idParada;
-	private double longitude;
-	private double latitude;
 	private char terminal;
+	private GeoPosition coordenadas;
 	
 	public Parada(){
 		
 	}
 	
-	public Parada(String idParada, double longitude, double latitude, char terminal){		
+	public Parada(String idParada, GeoPosition coordenadas, char terminal){		
 		this.idParada = idParada;		
-		this.longitude = longitude;
-		this.latitude = latitude;
+		this.coordenadas = coordenadas;
 		this.terminal = terminal;
 	}	
 
@@ -26,20 +26,12 @@ public class Parada {
 		this.idParada = idParada;
 	}
 
-	public double getLongitude() {
-		return longitude;
+	public GeoPosition getCoordenadas() {
+		return coordenadas;
 	}
 
-	public void setLongitude(double longitude) {
-		this.longitude = longitude;
-	}
-
-	public double getLatitude() {
-		return latitude;
-	}
-
-	public void setLatitude(double latitude) {
-		this.latitude = latitude;
+	public void setCoordenadas(GeoPosition coordenadas) {
+		this.coordenadas = coordenadas;
 	}
 
 	public char getTerminal() {
@@ -52,9 +44,10 @@ public class Parada {
 
 	@Override
 	public String toString() {
-		return "Parada [idParada=" + idParada + ", longitude=" + longitude
-				+ ", latitude=" + latitude + ", terminal=" + terminal + "]";
+		return "Parada [idParada=" + idParada + ", terminal=" + terminal
+				+ ", coordenadas=" + coordenadas + "]";
 	}
+
 	
 	
 }

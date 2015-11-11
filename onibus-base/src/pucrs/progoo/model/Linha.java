@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.jxmapviewer.viewer.GeoPosition;
+
 public class Linha {
-	private ArrayList<Coordenada> coordenadas;
+	private ArrayList<GeoPosition> coordenadas;
 	private Map<String, Parada> paradas;
 	private String idLinha;
 	private String nome;
@@ -24,11 +26,11 @@ public class Linha {
 	}
 		
 
-	public ArrayList<Coordenada> getCoordenadas() {
+	public ArrayList<GeoPosition> getCoordenadas() {
 		return coordenadas;
 	}
 
-	public void setCoordenadas(ArrayList<Coordenada> coordenadas) {
+	public void setCoordenadas(ArrayList<GeoPosition> coordenadas) {
 		this.coordenadas = coordenadas;
 	}
 

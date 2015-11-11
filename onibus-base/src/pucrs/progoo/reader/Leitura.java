@@ -12,10 +12,11 @@ import java.util.Map;
 import java.util.Scanner;
 
 import pucrs.progoo.model.Linha;
-import pucrs.progoo.model.Coordenada;
 import pucrs.progoo.model.Parada;
 
 import java.util.ArrayList;
+
+import org.jxmapviewer.viewer.GeoPosition;
 
 public class Leitura{
 	
@@ -69,9 +70,6 @@ public class Leitura{
 		}
 	}
 		
-
-	
-	
 	private static void preparaCoordenada(Map<String, Linha> dic) throws IOException{
 		Path path = Paths.get("coordenadas.csv");
 		
@@ -94,8 +92,8 @@ public class Leitura{
 				Linha linha = dic.get(idLinha);
 				
 				if(linha != null){
-					Coordenada novaCoordenada = new Coordenada(latitudeDouble, longitudeDouble);
-					ArrayList<Coordenada> lista = linha.getCoordenadas();
+					GeoPosition novaCoordenada = new GeoPosition(latitudeDouble, longitudeDouble);
+					ArrayList<GeoPosition> lista = linha.getCoordenadas();
 					lista.add(novaCoordenada);
 					dic.put(idLinha, linha);
 				}	
@@ -126,7 +124,9 @@ public class Leitura{
 				String terminal = sc.next();
 				char terminalChar = terminal.charAt(1);
 				
-				Parada parada = new Parada(idParada, longitudeDouble, latitudeDouble, terminalChar);
+				GeoPosition coordenadas = new GeoPosition(latitudeDouble, longitudeDouble);
+				
+				Parada parada = new Parada(idParada, coordenadas, terminalChar);
 				
 				dic.put(idParada, parada);
 			}
