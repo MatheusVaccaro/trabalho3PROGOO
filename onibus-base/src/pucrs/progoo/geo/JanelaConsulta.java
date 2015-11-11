@@ -105,6 +105,19 @@ public class JanelaConsulta extends javax.swing.JFrame {
         getContentPane().add(painelInferior, BorderLayout.SOUTH);
         
         //botões
+        ////////////////////////
+        
+        JButton teste = new JButton("4970");
+        teste.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		panel.setVisible(false);
+        		teste(e);
+        	}
+        });
+        painelInferior.add(teste);
+        
+        ////////////////////////
+        
         JButton btnNewButton = new JButton("Consulta 1");
         btnNewButton.setAction(action);
         btnNewButton.addActionListener(new ActionListener() {
@@ -180,6 +193,13 @@ public class JanelaConsulta extends javax.swing.JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
+    public void teste(java.awt.event.ActionEvent evt){
+    	List<MyWaypoint> lstPoints = new ArrayList<>();
+    	Parada parada = dicParadas.get("4970");
+    	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
+    	gerenciador.setPontos(lstPoints);
+    }
+    
     private void consulta1(java.awt.event.ActionEvent evt) {	
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
@@ -223,29 +243,43 @@ public class JanelaConsulta extends javax.swing.JFrame {
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
+        //Laço utilizado para identificar a parada clicada no mapa
         Parada parada = null;
         for(String paradaKey: dicParadas.keySet()){
-        	parada = dicParadas.get(paradaKey);
-        	if(parada.compareTo(o)){
-        		
+        	Parada aux = dicParadas.get(paradaKey);
+        	if(AlgoritmosGeograficos.calcDistancia(pos, aux.getCoordenadas()) <= 0.05){
+        		parada = aux;
+        		break;
         	}
         }
         
         
         for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
         	Linha linha = dicLinhas.get(idLinha);
-        	
         	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
-        	if(dicParadaDaLinha.containsKey(idParada)){ //significa que a Linha passa na Parada
-        		
-        		//não tenho certeza que operação fazer aqui
-        		//XXX mudar esse sysout
-        		System.out.println(linha.getNome() + "\t" + linha.getIdLinha());
-            	//
-        	}
+        	if(dicParadaDaLinha.containsKey(parada.getIdParada())){ //significa que a Linha passa na Parada
+        		ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
+        		Color corAleatoria = criaCor();
+        		Tracado tr = new Tracado();
+        		for(GeoPosition coordenada: listaCoordenadas){
+        			tr.addPonto(coordenada);
+    	        	tr.setCor(corAleatoria);
+        		}
+        	        
+        		GeoPosition locIn = listaCoordenadas.get(0);
+        		GeoPosition locFim = listaCoordenadas.get(listaCoordenadas.size()-1);
+        	       
+        		lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locIn));
+        		lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locFim));
+        	      
+    	        gerenciador.addTracado(tr);
+    	        gerenciador.setPontos(lstPoints);
+    	        
+    	        this.repaint();
+	        }
         }
     }
-        
+         
     private void consulta3(java.awt.event.ActionEvent evt) {
 
         // Para obter um ponto clicado no mapa, usar como segue:
