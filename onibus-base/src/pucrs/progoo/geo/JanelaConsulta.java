@@ -14,6 +14,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 import java.util.Set;
 
 import javax.swing.JFrame;
@@ -40,6 +41,10 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.UIManager;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 /**
  *
@@ -55,12 +60,15 @@ public class JanelaConsulta extends javax.swing.JFrame {
     private DefaultListModel<Linha> listaLinhas;
     private DefaultListModel<Linha> listaPadrao;
     private JList<Linha> list;
+    private final Action action = new SwingAction();
+    private JPanel panel;
 
     /**
      * Creates new form JanelaConsulta
      */
     public JanelaConsulta() {
     	super();    	
+    	
         //initComponents();
     	try{
     		dicLinhas = Leitura.geraLinhas();
@@ -92,10 +100,13 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         //botões
         JButton btnNewButton = new JButton("Consulta 1");
+        btnNewButton.setAction(action);
         btnNewButton.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		limparMapa(e);
-        		consulta1(e);
+        	public void actionPerformed(ActionEvent e) {   
+        		panel.setVisible(true);
+        		limparMapa(e);        		
+        		consulta1(e); 
+        		
         	}
         });
         painelInferior.add(btnNewButton);
@@ -103,6 +114,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton2 = new JButton("Consulta 2");
         btnNewButton2.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		panel.setVisible(false);
         		consulta2(e);
         	}
         });
@@ -111,6 +123,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton3 = new JButton("Consulta 3");
         btnNewButton3.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		panel.setVisible(false);
         		consulta3(e);
         	}
         });
@@ -119,6 +132,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton4 = new JButton("Consulta 4");
         btnNewButton4.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		panel.setVisible(false);
         		consulta4(e);
         	}
         });
@@ -127,6 +141,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton5 = new JButton("Limpar Mapa");
         btnNewButton5.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		
         		limparMapa(e);
         	}
         });
@@ -136,18 +151,25 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         
         //Criação da lista de resultados/linhas
-        JPanel panel = new JPanel();
+        panel = new JPanel();
+        panel.addComponentListener(new ComponentAdapter() {        	        	
+        });
         getContentPane().add(panel, BorderLayout.WEST);
         JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane);
         list = new JList();
         list.setVisibleRowCount(32);
-        list.setBorder(UIManager.getBorder("ScrollPane.border"));
+        list.setValueIsAdjusting(true);
+        list.addComponentListener(new ComponentAdapter() {        	
+        });        
+        list.setBorder(null);
         scrollPane.setViewportView(list);
+        panel.setVisible(false);
 
         this.list.setModel(listaLinhas);
         
         this.setSize(800,600);
+      
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
@@ -193,9 +215,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
 
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
-
+    	
+    	
+    	
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
+        
         
         // Exemplo de uso:
         
@@ -243,7 +268,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        	ArrayList<Coordenada> coordenadas = linha.getCoordenadas();
 	        	for(Coordenada coordenada: coordenadas){
 	        		GeoPosition posicao = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
-	        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.5){
+	        		if(AlgoritmosGeograficos.calcDistancia(pos, posicao) <= 0.1){
 	        			System.out.println(linha.getNome() + " - " + linha.getIdLinha());
 	        			
 	        			Tracado tr = new Tracado();
@@ -253,10 +278,10 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        	        for(Coordenada coordenada2: listaCoordenadas){
 	        	        	GeoPosition loc = new GeoPosition(coordenada2.getLatitude(), coordenada2.getLongitude());
 	        	        	tr.addPonto(loc);
-	        	        	tr.setCor(Color.CYAN);
+	        	        	tr.setCor(criaCor());
 	        	        }
 	        	        gerenciador.addTracado(tr);
-	        	        
+	        	         
 	        	        
 	        	        this.repaint();
 	        			
@@ -374,4 +399,24 @@ public class JanelaConsulta extends javax.swing.JFrame {
     		}
     	}    
     } 	
+	private class SwingAction extends AbstractAction {
+		public SwingAction() {
+			putValue(NAME, "SwingAction");
+			putValue(SHORT_DESCRIPTION, "Some short description");
+		}
+		public void actionPerformed(ActionEvent e) {
+		}
+	}
+	  public Color criaCor()
+	  {
+	    Random rand = new Random();
+	 
+	    float r = rand.nextFloat();
+	    float g = rand.nextFloat();
+	    float b = rand.nextFloat();	   	    
+	 
+	    Color cor = new Color(r, g, b);
+		return cor;
+	    
+	}
  }
