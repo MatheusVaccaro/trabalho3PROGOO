@@ -19,9 +19,9 @@ import pucrs.progoo.geo.JanelaConsulta;
  *
  * @author Marcelo Cohen
  */
-public class App {
+public class App {                               
     public static void main(String[] args) throws IOException{            
-        JanelaConsulta janela = new JanelaConsulta();
+        JanelaConsulta janela = new JanelaConsulta();             
         janela.setVisible(true);      
-    }
-}
+    }	
+}                                               

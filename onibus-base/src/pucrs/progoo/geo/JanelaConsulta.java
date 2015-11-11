@@ -39,6 +39,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
+import javax.swing.UIManager;
 
 /**
  *
@@ -139,6 +140,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane);
         list = new JList();
+        list.setVisibleRowCount(32);
+        list.setBorder(UIManager.getBorder("ScrollPane.border"));
         scrollPane.setViewportView(list);
 
         
