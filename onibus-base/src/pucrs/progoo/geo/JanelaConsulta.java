@@ -59,8 +59,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
     private Map<String, Parada> dicParadas;
     private DefaultListModel<Linha> listaLinhas;
     private DefaultListModel<Linha> listaPadrao;
-    private JList<Linha> list;
-    private final Action action = new SwingAction();
+    private JList<Linha> list;   
     private JPanel panel;
 
     /**
@@ -118,8 +117,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         ////////////////////////
         
-        JButton btnNewButton = new JButton("Consulta 1");
-        btnNewButton.setAction(action);
+        JButton btnNewButton = new JButton("Consulta 1");       
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {   
         		panel.setVisible(true);
