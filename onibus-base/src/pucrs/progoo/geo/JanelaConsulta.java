@@ -154,48 +154,43 @@ public class JanelaConsulta extends javax.swing.JFrame {
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
         // Exemplo de uso:
-        try{
-	        Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-	        
-	        //XXX CHAVE QUANDO O MENU DE OPCOES FOR IMPLEMENTADO
-	        Linha linha = dicLinhas.get("127633");
-	        Map<String, Parada> dicParadas = linha.getParadas();
-	        
-	        for(String idParada: dicParadas.keySet()){
-	        	Parada parada = dicParadas.get(idParada);
-	        	GeoPosition loc = new GeoPosition(parada.getLatitude(), parada.getLongitude());
-	        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), loc));
-	        }
+        
 	        
 	        
-	        // Informa o resultado para o gerenciador
-	        gerenciador.setPontos(lstPoints);
-	        
-	        
-	        // Exemplo: criando um traçado
-	        Tracado tr = new Tracado();
-	        
-	        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
-	        
-	        for(Coordenada coordenada: listaCoordenadas){
-	        	GeoPosition loc = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
-	        	tr.addPonto(loc);
-	        	tr.setCor(Color.CYAN);
-	        }
-	        
-	        
-	        // E adicionando o traçado...
-	        gerenciador.addTracado(tr);
-	        
-	        
-	        this.repaint();
+        //XXX CHAVE QUANDO O MENU DE OPCOES FOR IMPLEMENTADO
+        Linha linha = dicLinhas.get("127633");
+        Map<String, Parada> dicParadas = linha.getParadas();
+        
+        for(String idParada: dicParadas.keySet()){
+        	Parada parada = dicParadas.get(idParada);
+        	GeoPosition loc = new GeoPosition(parada.getLatitude(), parada.getLongitude());
+        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), loc));
         }
-        catch(IOException e){
-        	e.printStackTrace();
-        	System.out.println("Erro ao localizar paradas");
+        
+        
+        // Informa o resultado para o gerenciador
+        gerenciador.setPontos(lstPoints);
+        
+        
+        // Exemplo: criando um traçado
+        Tracado tr = new Tracado();
+        
+        ArrayList<Coordenada> listaCoordenadas = linha.getCoordenadas();
+        
+        for(Coordenada coordenada: listaCoordenadas){
+        	GeoPosition loc = new GeoPosition(coordenada.getLatitude(), coordenada.getLongitude());
+        	tr.addPonto(loc);
+        	tr.setCor(Color.CYAN);
         }
-
-    }
+        
+        
+        // E adicionando o traçado...
+        gerenciador.addTracado(tr);
+        
+        
+        this.repaint();
+        }
+    
     
     private void consulta2(java.awt.event.ActionEvent evt) {
 
