@@ -94,6 +94,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton = new JButton("Consulta 1");
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
+        		limparMapa(e);
         		consulta1(e);
         	}
         });
@@ -144,24 +145,17 @@ public class JanelaConsulta extends javax.swing.JFrame {
         list.setBorder(UIManager.getBorder("ScrollPane.border"));
         scrollPane.setViewportView(list);
 
-        
+        this.list.setModel(listaLinhas);
         
         this.setSize(800,600);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
-    private void consulta1(java.awt.event.ActionEvent evt) {
-    	this.list.setModel(listaLinhas);
-    	
+    private void consulta1(java.awt.event.ActionEvent evt) {	
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
-        
-        // Exemplo de uso:
-        
-	        
-	        
-        //XXX CHAVE QUANDO O MENU DE OPCOES FOR IMPLEMENTADO
-        Linha linha = dicLinhas.get("127633");
+
+        Linha linha = list.getSelectedValue();
         Map<String, Parada> dicParadas = linha.getParadas();
         
         for(String idParada: dicParadas.keySet()){
