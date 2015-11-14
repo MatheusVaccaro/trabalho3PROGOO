@@ -44,6 +44,8 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import java.awt.GridLayout;
+import javax.swing.BoxLayout;
 
 /**
  *
@@ -59,8 +61,10 @@ public class JanelaConsulta extends javax.swing.JFrame {
     private Map<String, Parada> dicParadas;
     private DefaultListModel<Linha> listaLinhas;
     private DefaultListModel<Linha> listaLinhasSelecionadas;
-    private JList<Linha> list;
-    private JList<Linha> list2;
+    private DefaultListModel<Parada> listaParadasSelecionadas;
+    private JList<Linha> listLinhas;
+    private JList<Linha> listLinhasSelecionadas;
+    private JList<Parada> listParadasSelecionadas;
     private JPanel panel;
     private JPanel panelResultados;
 
@@ -90,6 +94,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	}
     	
     	listaLinhasSelecionadas = new DefaultListModel<>();
+    	listaParadasSelecionadas = new DefaultListModel<>();
     	
         GeoPosition poa = new GeoPosition(-30.05, -51.18);
         gerenciador = new GerenciadorMapa(poa, GerenciadorMapa.FonteImagens.VirtualEarth);
@@ -160,6 +165,22 @@ public class JanelaConsulta extends javax.swing.JFrame {
         });
         painelInferior.add(btnNewButton4);
         
+        JButton btnNewButtonAddParada = new JButton("Adicionar Parada");
+        btnNewButtonAddParada.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		addParada(e);
+        	}
+        });
+        painelInferior.add(btnNewButtonAddParada);
+        
+        JButton btnNewButtonRemoveParada = new JButton("Remover Parada");
+        btnNewButtonRemoveParada.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		removeParada(e);
+        	}
+        });
+        painelInferior.add(btnNewButtonRemoveParada);
+        
         JButton btnNewButton5 = new JButton("Limpar Mapa");
         btnNewButton5.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -178,16 +199,16 @@ public class JanelaConsulta extends javax.swing.JFrame {
         getContentPane().add(panel, BorderLayout.WEST);
         JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane);
-        list = new JList<>();
-        list.setVisibleRowCount(32);
-        list.setValueIsAdjusting(true);
-        list.addComponentListener(new ComponentAdapter() {        	
+        listLinhas = new JList<>();
+        listLinhas.setVisibleRowCount(32);
+        listLinhas.setValueIsAdjusting(true);
+        listLinhas.addComponentListener(new ComponentAdapter() {        	
         });        
-        list.setBorder(null);
-        scrollPane.setViewportView(list);
+        listLinhas.setBorder(null);
+        scrollPane.setViewportView(listLinhas);
         panel.setVisible(true);
 
-        this.list.setModel(listaLinhas);
+        this.listLinhas.setModel(listaLinhas);
         
         ////////////////////////////////////////////
         
@@ -195,24 +216,58 @@ public class JanelaConsulta extends javax.swing.JFrame {
         panelResultados.addComponentListener(new ComponentAdapter() {        	        	
         });
         getContentPane().add(panelResultados, BorderLayout.EAST);
+        panelResultados.setLayout(new BoxLayout(panelResultados, BoxLayout.X_AXIS));
         JScrollPane scrollPane_1 = new JScrollPane();
         panelResultados.add(scrollPane_1);
-        list2 = new JList<>();
-        list2.setVisibleRowCount(32);
-        list2.setValueIsAdjusting(true);
-        list2.addComponentListener(new ComponentAdapter() {        	
+        listLinhasSelecionadas = new JList<>();
+        listLinhasSelecionadas.setVisibleRowCount(32);
+        listLinhasSelecionadas.setValueIsAdjusting(true);
+        listLinhasSelecionadas.addComponentListener(new ComponentAdapter() {        	
         });        
-        list2.setBorder(null);
-        scrollPane_1.setViewportView(list2);
+        listLinhasSelecionadas.setBorder(null);
+        scrollPane_1.setViewportView(listLinhasSelecionadas);
         panelResultados.setVisible(true);
         
-        this.list2.setModel(listaLinhasSelecionadas);
+        this.listLinhasSelecionadas.setModel(listaLinhasSelecionadas);
+        
+        JScrollPane scrollPane_2 = new JScrollPane();
+        panelResultados.add(scrollPane_2);
+        listParadasSelecionadas = new JList<>();
+        listParadasSelecionadas.setVisibleRowCount(32);
+        listParadasSelecionadas.setValueIsAdjusting(true);
+        listParadasSelecionadas.addComponentListener(new ComponentAdapter() {        	
+        });        
+        listParadasSelecionadas.setBorder(null);
+        scrollPane_2.setViewportView(listParadasSelecionadas);
+        panelResultados.setVisible(true);
+        
+        this.listParadasSelecionadas.setModel(listaParadasSelecionadas);
         
         this.setSize(800,600);
       
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
+    private void addParada(java.awt.event.ActionEvent evt) {
+    	GeoPosition pos = gerenciador.getPosicao();     
+
+        //La�o utilizado para identificar a parada clicada no mapa
+        Parada parada = null;
+        for(String paradaKey: dicParadas.keySet()){
+        	Parada aux = dicParadas.get(paradaKey);
+        	if(AlgoritmosGeograficos.calcDistancia(pos, aux.getCoordenadas()) <= 0.05){
+        		parada = aux;
+        		listaParadasSelecionadas.addElement(parada);
+        		break;
+        	}
+        }
+    }
+
+    private void removeParada(java.awt.event.ActionEvent evt) {
+    	Parada parada = listParadasSelecionadas.getSelectedValue();
+    	listaParadasSelecionadas.removeElement(parada);
+    }
+    
     public void teste(java.awt.event.ActionEvent evt){
     	List<MyWaypoint> lstPoints = new ArrayList<>();
     	Parada parada = dicParadas.get("4970");
@@ -235,7 +290,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
 
-        Linha linha = list.getSelectedValue();
+        Linha linha = listLinhas.getSelectedValue();
         Map<String, Parada> dicParadas = linha.getParadas();
         
         for(String idParada: dicParadas.keySet()){
@@ -352,85 +407,41 @@ public class JanelaConsulta extends javax.swing.JFrame {
     }
 
     private void consulta4(java.awt.event.ActionEvent evt) {
-
-	    // Para obter um ponto clicado no mapa, usar como segue:
-		GeoPosition pos = gerenciador.getPosicao();     
-	
-	    // Lista para armazenar o resultado da consulta
+    	listaLinhasSelecionadas.clear();
+    	gerenciador.clear();
+    	Parada[] paradas = new Parada[listaParadasSelecionadas.size()];
+    	listaParadasSelecionadas.copyInto(paradas);
 	    List<MyWaypoint> lstPoints = new ArrayList<>();
-	    
-	    // Exemplo de uso:
-	    	Set<String> listaLinhasQuePassamNasParadas = new LinkedHashSet<>();
-	    	ArrayList<String> listaParadas = new ArrayList<>();
-	    	listaParadas.add("4133");
-	    	listaParadas.add("3809");
-	    	
-	    	//Map<String, Linha> dicLinhas = Leitura.geraLinhas();
-	    
-	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
-	        	Linha linha = dicLinhas.get(idLinha);
-	        	
-	        	Map<String, Parada> dicParadaDaLinha = linha.getParadas();
-	        	
-	        	for(String idParada: listaParadas){
-		        	if(dicParadaDaLinha.containsKey(idParada)){ //significa que a Linha passa na Parada
-		        		
-		        		//n�o tenho certeza que opera��o fazer aqui
-		        		//XXX dar uma olhada aqui
-		        		listaLinhasQuePassamNasParadas.add(linha.getNome() + " - " + linha.getIdLinha());
-		            	//
-		        	}
-	        	}
-	        }
-	        System.out.println("Lista de Linhas que passam nas paradas " + listaParadas);
-	        for(String palavra: listaLinhasQuePassamNasParadas){
-	        	System.out.println(palavra);
-	        }
-	   } 
-    
-    /*private void consultaOriginal(java.awt.event.ActionEvent evt) {
-
-        // Para obter um ponto clicado no mapa, usar como segue:
-    	GeoPosition pos = gerenciador.getPosicao();     
-
-        // Lista para armazenar o resultado da consulta
-        List<MyWaypoint> lstPoints = new ArrayList<>();
-        
-        // Exemplo de uso:
-        
-        GeoPosition loc = new GeoPosition(-30.05, -51.18);  // ex: localização de uma parada
-        GeoPosition loc2 = new GeoPosition(-30.08, -51.22); // ex: localização de uma parada
-        lstPoints.add(new MyWaypoint(Color.BLUE, "Teste", loc));
-        lstPoints.add(new MyWaypoint(Color.BLACK, "Teste 2", loc2));
-        
-        
-
-        // Informa o resultado para o gerenciador
-        gerenciador.setPontos(lstPoints);
-        
-        // Exemplo: criando um traçado
-        Tracado tr = new Tracado();
-        // Adicionando as mesmas localizações de antes
-        tr.addPonto(loc);
-        tr.addPonto(loc2);
-        tr.setCor(Color.CYAN);
-        // E adicionando o traçado...
-        gerenciador.addTracado(tr);
-        
-        // Outro:
-        GeoPosition loc3 = new GeoPosition(-30.02, -51.16);  
-        GeoPosition loc4 = new GeoPosition(-30.01, -51.24);
-        Tracado tr2 = new Tracado();
-        tr2.addPonto(loc3);
-        tr2.addPonto(loc4);
-        tr2.setCor(Color.MAGENTA);
-        // E adicionando o traçado...
-        gerenciador.addTracado(tr2);
-        
-        this.repaint();
-
-    }*/
-    
+	    for(String linhaKey: dicLinhas.keySet()){
+	    	Linha linha = dicLinhas.get(linhaKey);
+	    	boolean possuiParadas = true;
+	    	for(Parada parada: paradas){
+	    		if(!linha.getParadas().containsKey(parada.getIdParada())){
+	    			possuiParadas = false;
+	    			break;
+	    		}
+	    	}
+	    	if(possuiParadas == true){
+	    		
+	    		ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
+        		Color corAleatoria = criaCor();
+        		Tracado tr = new Tracado();
+        		for(GeoPosition coordenada: listaCoordenadas){
+        			tr.addPonto(coordenada);
+    	        	tr.setCor(corAleatoria);
+        		}
+        		listaLinhasSelecionadas.addElement(linha);        		
+    	        gerenciador.addTracado(tr);
+    	        this.repaint();
+	    	}
+	    }
+	    for(Parada parada: paradas){
+	    	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
+	    }
+	    gerenciador.setPontos(lstPoints);
+	    this.repaint();
+    }
+     
     private void limparMapa(java.awt.event.ActionEvent evt){
     	List<MyWaypoint> lstPoints = new ArrayList<>();
     	gerenciador.setPontos(lstPoints);
