@@ -58,9 +58,11 @@ public class JanelaConsulta extends javax.swing.JFrame {
     private Map<String, Linha> dicLinhas;
     private Map<String, Parada> dicParadas;
     private DefaultListModel<Linha> listaLinhas;
-    private DefaultListModel<Linha> listaPadrao;
-    private JList<Linha> list;   
+    private DefaultListModel<Linha> listaLinhasSelecionadas;
+    private JList<Linha> list;
+    private JList<Linha> list2;
     private JPanel panel;
+    private JPanel panelResultados;
 
     /**
      * Creates new form JanelaConsulta
@@ -82,11 +84,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	}
     	
     	listaLinhas = new DefaultListModel<>();
-    	
     	for(String key: dicLinhas.keySet()){
     		Linha linha = dicLinhas.get(key);
     		listaLinhas.addElement(linha);
     	}
+    	
+    	listaLinhasSelecionadas = new DefaultListModel<>();
     	
         GeoPosition poa = new GeoPosition(-30.05, -51.18);
         gerenciador = new GerenciadorMapa(poa, GerenciadorMapa.FonteImagens.VirtualEarth);
@@ -109,18 +112,22 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton teste = new JButton("4970");
         teste.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		panel.setVisible(false);
         		teste(e);
         	}
         });
         painelInferior.add(teste);
         
-        ////////////////////////
+        JButton paradas = new JButton("Exibir Paradas");
+        paradas.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		exibirParadas(e);
+        	}
+        });
+        painelInferior.add(paradas);
         
         JButton btnNewButton = new JButton("Consulta 1");       
         btnNewButton.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {   
-        		panel.setVisible(true);
         		limparMapa(e);        		
         		consulta1(e); 
         		
@@ -131,7 +138,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton2 = new JButton("Consulta 2");
         btnNewButton2.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		panel.setVisible(false);
         		consulta2(e);
         	}
         });
@@ -140,7 +146,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton3 = new JButton("Consulta 3");
         btnNewButton3.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		panel.setVisible(false);
         		limparMapa(e);
         		consulta3(e);
         	}
@@ -150,7 +155,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton4 = new JButton("Consulta 4");
         btnNewButton4.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		panel.setVisible(false);
         		consulta4(e);
         	}
         });
@@ -159,7 +163,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         JButton btnNewButton5 = new JButton("Limpar Mapa");
         btnNewButton5.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
-        		
         		limparMapa(e);
         	}
         });
@@ -175,16 +178,35 @@ public class JanelaConsulta extends javax.swing.JFrame {
         getContentPane().add(panel, BorderLayout.WEST);
         JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane);
-        list = new JList();
+        list = new JList<>();
         list.setVisibleRowCount(32);
         list.setValueIsAdjusting(true);
         list.addComponentListener(new ComponentAdapter() {        	
         });        
         list.setBorder(null);
         scrollPane.setViewportView(list);
-        panel.setVisible(false);
+        panel.setVisible(true);
 
         this.list.setModel(listaLinhas);
+        
+        ////////////////////////////////////////////
+        
+        panelResultados = new JPanel();
+        panelResultados.addComponentListener(new ComponentAdapter() {        	        	
+        });
+        getContentPane().add(panelResultados, BorderLayout.EAST);
+        JScrollPane scrollPane_1 = new JScrollPane();
+        panelResultados.add(scrollPane_1);
+        list2 = new JList<>();
+        list2.setVisibleRowCount(32);
+        list2.setValueIsAdjusting(true);
+        list2.addComponentListener(new ComponentAdapter() {        	
+        });        
+        list2.setBorder(null);
+        scrollPane_1.setViewportView(list2);
+        panelResultados.setVisible(true);
+        
+        this.list2.setModel(listaLinhasSelecionadas);
         
         this.setSize(800,600);
       
@@ -197,6 +219,17 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
     	gerenciador.setPontos(lstPoints);
     }
+ 
+    private void exibirParadas(java.awt.event.ActionEvent evt) {	
+        List<MyWaypoint> lstPoints = new ArrayList<>();
+        
+        for(String idParada: dicParadas.keySet()){
+        	Parada parada = dicParadas.get(idParada);
+        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
+        }
+        
+        gerenciador.setPontos(lstPoints);
+        }
     
     private void consulta1(java.awt.event.ActionEvent evt) {	
         // Lista para armazenar o resultado da consulta
@@ -234,7 +267,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
         }
       
     private void consulta2(java.awt.event.ActionEvent evt) {
-
+    	listaLinhasSelecionadas.clear();
+    	gerenciador.clear();
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
 
@@ -263,13 +297,14 @@ public class JanelaConsulta extends javax.swing.JFrame {
         			tr.addPonto(coordenada);
     	        	tr.setCor(corAleatoria);
         		}
-        	        
+        		listaLinhasSelecionadas.addElement(linha);        		
+        	    /*    
         		GeoPosition locIn = listaCoordenadas.get(0);
         		GeoPosition locFim = listaCoordenadas.get(listaCoordenadas.size()-1);
         	       
         		lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locIn));
         		lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locFim));
-        	      
+        	     */ 
     	        gerenciador.addTracado(tr);
     	        gerenciador.setPontos(lstPoints);
     	        
@@ -279,7 +314,8 @@ public class JanelaConsulta extends javax.swing.JFrame {
     }
          
     private void consulta3(java.awt.event.ActionEvent evt) {
-
+    	listaLinhasSelecionadas.clear();
+    	gerenciador.clear();
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
 
@@ -292,7 +328,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        	ArrayList<GeoPosition> coordenadas = linha.getCoordenadas();
 	        	for(GeoPosition coordenada: coordenadas){
 	        		if(AlgoritmosGeograficos.calcDistancia(pos, coordenada) <= 0.05){
-	        			System.out.println(linha.getNome() + " - " + linha.getIdLinha());
+	        			listaLinhasSelecionadas.addElement(linha);
 	        			
 	        			Tracado tr = new Tracado();
 	        	        
@@ -303,10 +339,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        	        	tr.addPonto(coordenada2);
 	        	        	tr.setCor(corAleatoria);
 	        	        }
-	        	        GeoPosition locIn = listaCoordenadas.get(0);
-	        	        GeoPosition locFim = listaCoordenadas.get(listaCoordenadas.size()-1);
-	                	lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locIn));
-	                	lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locFim));
 	        	        gerenciador.addTracado(tr);
 	        	        gerenciador.setPontos(lstPoints);
 	        	        
