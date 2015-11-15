@@ -80,29 +80,31 @@ public class JanelaConsulta extends javax.swing.JFrame {
     public JanelaConsulta() {
     	super();    	
     	
-        //initComponents();
+        //inicialização das linhas de ônibus
     	try{
     		dicLinhas = Leitura.geraLinhas();
     	} catch(IOException e){
     		System.err.println("Erro na geração das linhas de ônibus");
     	}
     	
+    	//inicialização das paradas de ônibus
     	try{
     		dicParadas = Leitura.preparaParada();
     	} catch(IOException e){
     		System.err.println("Erro na geração das paradas de ônibus");
     	}
     	
+    	//inicialização dos listModels
     	listaLinhas = new DefaultListModel<>();
     	for(String key: dicLinhas.keySet()){
     		Linha linha = dicLinhas.get(key);
     		listaLinhas.addElement(linha);
     	}
-    	
     	listaLinhasSelecionadas = new DefaultListModel<>();
     	listaParadasSelecionadas = new DefaultListModel<>();
     	
-        GeoPosition poa = new GeoPosition(-30.05, -51.18);
+    	///////////////////////////////////////////////////////
+    	GeoPosition poa = new GeoPosition(-30.05, -51.18);
         gerenciador = new GerenciadorMapa(poa, GerenciadorMapa.FonteImagens.VirtualEarth);
         mouse = new EventosMouse();        		
         gerenciador.getMapKit().getMainMap().addMouseListener(mouse);
@@ -116,18 +118,9 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         painelInferior = new JPanel();
         getContentPane().add(painelInferior, BorderLayout.SOUTH);
+        ///////////////////////////////////////////////////////
         
-        //botões
-        ////////////////////////
-        
-        JButton teste = new JButton("4970");
-        teste.addActionListener(new ActionListener() {
-        	public void actionPerformed(ActionEvent e) {
-        		teste(e);
-        	}
-        });
-        painelInferior.add(teste);
-        
+        //botões        
         JButton paradas = new JButton("Exibir Paradas");
         paradas.addActionListener(new ActionListener() {
         	public void actionPerformed(ActionEvent e) {
@@ -198,7 +191,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         painelInferior.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
         
         
-        //Criação da lista de resultados/linhas
+        //Criação da lista de linhas
         panel = new JPanel();
         panel.addComponentListener(new ComponentAdapter() {        	        	
         });
@@ -216,7 +209,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
 
         this.listLinhas.setModel(listaLinhas);
         
-        ////////////////////////////////////////////
         
         panelResultados = new JPanel();
         panelResultados.addComponentListener(new ComponentAdapter() {        	        	
@@ -254,6 +246,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
+    //método para adição de uma parada na lista de paradas selecionadas
     private void addParada(java.awt.event.ActionEvent evt) {
     	GeoPosition pos = gerenciador.getPosicao();     
 
@@ -269,18 +262,13 @@ public class JanelaConsulta extends javax.swing.JFrame {
         }
     }
 
+    //método para remoção de uma parada da lista de paradas selecionadas
     private void removeParada(java.awt.event.ActionEvent evt) {
     	Parada parada = listParadasSelecionadas.getSelectedValue();
     	listaParadasSelecionadas.removeElement(parada);
     }
     
-    public void teste(java.awt.event.ActionEvent evt){
-    	List<MyWaypoint> lstPoints = new ArrayList<>();
-    	Parada parada = dicParadas.get("4970");
-    	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
-    	gerenciador.setPontos(lstPoints);
-    }
- 
+    //método para exibit todas as paradas de ônibus no mapa
     private void exibirParadas(java.awt.event.ActionEvent evt) {	
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
@@ -293,45 +281,38 @@ public class JanelaConsulta extends javax.swing.JFrame {
         this.repaint();
         }
     
+    //pinta uma linha de ônibus selecionada em uma lista
     private void consulta1(java.awt.event.ActionEvent evt) {	
-        // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
 
         Linha linha = listLinhas.getSelectedValue();
         Map<String, Parada> dicParadas = linha.getParadas();
         
+        //percorre todas as paradas de uma determinada linha e cria waypoints para elas no mapa
         for(String idParada: dicParadas.keySet()){
         	Parada parada = dicParadas.get(idParada);
         	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
         }
         
-        
-        // Informa o resultado para o gerenciador
         gerenciador.setPontos(lstPoints);
         
-        
-        // Exemplo: criando um traÃ§ado
         Tracado tr = new Tracado();
-        
         ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
-        
+        //pinta o trajeto de uma determinada linha de ônibus
         for(GeoPosition coordenada: listaCoordenadas){
         	tr.addPonto(coordenada);
         	tr.setCor(Color.CYAN);
         }
-        
-        
-        // E adicionando o traÃ§ado...
+      
         gerenciador.addTracado(tr);
-        
-        
         this.repaint();
         }
-      
+     
+    //pinta as linhas que passam em uma parada selecionada no mapa
     private void consulta2(java.awt.event.ActionEvent evt) {
     	listaLinhasSelecionadas.clear();
     	gerenciador.clear();
-        // Para obter um ponto clicado no mapa, usar como segue:
+
     	GeoPosition pos = gerenciador.getPosicao();     
 
         List<MyWaypoint> lstPoints = new ArrayList<>();
@@ -368,13 +349,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	        	tr.setCor(corAleatoria);
         		}
         		listaLinhasSelecionadas.addElement(linha);        		
-        	    /*    
-        		GeoPosition locIn = listaCoordenadas.get(0);
-        		GeoPosition locFim = listaCoordenadas.get(listaCoordenadas.size()-1);
-        	       
-        		lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locIn));
-        		lstPoints.add(new MyWaypoint(corAleatoria, linha.getIdLinha(), locFim));
-        	     */ 
     	        gerenciador.addTracado(tr);
     	        gerenciador.setPontos(lstPoints);
     	        
@@ -382,11 +356,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        }
         }
     }
-         
+    
+    //pinta as linhas que passam próximas a um ponto selecionada no mapa
     private void consulta3(java.awt.event.ActionEvent evt) {
     	listaLinhasSelecionadas.clear();
     	gerenciador.clear();
-        // Para obter um ponto clicado no mapa, usar como segue:
+
     	GeoPosition pos = gerenciador.getPosicao();     
     	
     	if(pos == null){
@@ -427,10 +402,12 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        }
         }
     }
-
+    
+    //pinta as linhas que passam em um conjunto de paradas simultaneamente
     private void consulta4(java.awt.event.ActionEvent evt) {
     	listaLinhasSelecionadas.clear();
     	gerenciador.clear();
+    	
     	Parada[] paradas = new Parada[listaParadasSelecionadas.size()];
     	listaParadasSelecionadas.copyInto(paradas);
 
@@ -441,18 +418,22 @@ public class JanelaConsulta extends javax.swing.JFrame {
     			    JOptionPane.WARNING_MESSAGE);
     		return;
     	}
+    	
 	    List<MyWaypoint> lstPoints = new ArrayList<>();
+	    
+	    //percorre todas as linhas de ônibus
 	    for(String linhaKey: dicLinhas.keySet()){
 	    	Linha linha = dicLinhas.get(linhaKey);
 	    	boolean possuiParadas = true;
+	    	//testa para descobrir se esta linha possui todas as paradas de ônibus selecionadas
 	    	for(Parada parada: paradas){
 	    		if(!linha.getParadas().containsKey(parada.getIdParada())){
 	    			possuiParadas = false;
 	    			break;
 	    		}
 	    	}
-	    	if(possuiParadas == true){
-	    		
+	    	
+	    	if(possuiParadas == true){	    		
 	    		ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
         		Color corAleatoria = criaCor();
         		Tracado tr = new Tracado();
@@ -465,13 +446,17 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	        this.repaint();
 	    	}
 	    }
+	    
+	    //remarca as paradas selcionadas no mapa
 	    for(Parada parada: paradas){
 	    	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
 	    }
+	    
 	    gerenciador.setPontos(lstPoints);
 	    this.repaint();
     }
-     
+    
+    //método para apagar todas as linhas e paradas desenhadas no mapa
     private void limparMapa(java.awt.event.ActionEvent evt){
     	List<MyWaypoint> lstPoints = new ArrayList<>();
     	gerenciador.setPontos(lstPoints);
@@ -506,6 +491,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
 		}
 	}
 	
+    //método para criação de cores aleatórias
     public Color criaCor(){
 	    Random rand = new Random();
 	 

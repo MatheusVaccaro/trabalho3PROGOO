@@ -19,29 +19,7 @@ import java.util.ArrayList;
 import org.jxmapviewer.viewer.GeoPosition;
 
 public class Leitura{
-	
-	//testes
-	public static void main(String args[]){
-		System.out.println("teste");
-		try{
-			Map<String, Linha> dic = geraLinhas();
-			System.out.println(dic.size());
-			for(String key: dic.keySet()){
-				System.out.println(dic.get(key));
-				Linha linha = dic.get(key);
-				System.out.println(linha.getNome());
-				System.out.println(linha.getCodigo());
-				System.out.println(linha.getTipo());
-				break;
-			}
-		}
-		catch(IOException e){
-			System.out.println("Erro de E/S");
-			e.printStackTrace();
-		}
-	}
-	//
-
+	//leitura de todas as linhas de ônibus
 	private static Map<String, Linha> preparaLinha() throws IOException{
 		Map<String, Linha> dic = new HashMap<String, Linha>();		
 		Path path = Paths.get("linhas.csv");
@@ -69,7 +47,8 @@ public class Leitura{
 			return dic;
 		}
 	}
-		
+	
+	//inserção de todas as cordenadas em suas respectivas linhas de ônibus
 	private static void preparaCoordenada(Map<String, Linha> dic) throws IOException{
 		Path path = Paths.get("coordenadas.csv");
 		
@@ -101,6 +80,7 @@ public class Leitura{
 		}
 	}
 	
+	//leitura de todas as paradas de ônibus
 	public static Map<String, Parada> preparaParada() throws IOException{
 		Map<String, Parada> dic = new HashMap<>();
 		Path path = Paths.get("paradas.csv");
@@ -135,8 +115,7 @@ public class Leitura{
 		}
 	}
 	
-	
-
+	//leitura do arquivo que relaciona as linhas e suas respectivas paradas
 	private static Map<String, ArrayList<String>> preparaParadaLinha() throws IOException{
 		Map<String, ArrayList<String>> dic = new HashMap<>();
 		Path path = Paths.get("paradalinha.csv");
@@ -169,7 +148,8 @@ public class Leitura{
 			return dic;
 		}
 	}
-					
+	
+	//inserção da paradas de ônibus em suas respectivas linhas
 	private static void insereParada(Map<String, ArrayList<String>> paradaLinha, Map<String, Parada> paradas, Map<String, Linha> linhas) throws IOException{
 		for(String idLinha: paradaLinha.keySet()){
 			Linha linha = linhas.get(idLinha);
@@ -187,8 +167,7 @@ public class Leitura{
 		}
 	}
 		
-	
-
+	//método que realiza a leitura dos 4 arquivos de dados
 	public static Map<String, Linha> geraLinhas() throws IOException{
 		Map<String, Linha> dic = preparaLinha();
 		preparaCoordenada(dic);
