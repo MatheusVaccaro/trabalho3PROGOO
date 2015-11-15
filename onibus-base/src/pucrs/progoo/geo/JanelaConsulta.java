@@ -36,16 +36,22 @@ import pucrs.progoo.reader.*;
 import java.awt.FlowLayout;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JScrollPane;
 import javax.swing.JList;
 import javax.swing.UIManager;
+
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+
 import java.awt.GridLayout;
+
 import javax.swing.BoxLayout;
+import javax.swing.JLabel;
 
 /**
  *
@@ -284,6 +290,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         }
         
         gerenciador.setPontos(lstPoints);
+        this.repaint();
         }
     
     private void consulta1(java.awt.event.ActionEvent evt) {	
@@ -327,7 +334,6 @@ public class JanelaConsulta extends javax.swing.JFrame {
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
 
-        // Lista para armazenar o resultado da consulta
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
         //Laço utilizado para identificar a parada clicada no mapa
@@ -340,6 +346,15 @@ public class JanelaConsulta extends javax.swing.JFrame {
         	}
         }
         
+        if(parada == null){
+    		JOptionPane.showMessageDialog(null,
+    			    "Uma parada não foi selecionada ou não pode ser encontrada.",
+    			    "Aviso",
+    			    JOptionPane.WARNING_MESSAGE);
+    		return;
+    	}
+        
+        lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
         
         for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
         	Linha linha = dicLinhas.get(idLinha);
@@ -373,8 +388,15 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	gerenciador.clear();
         // Para obter um ponto clicado no mapa, usar como segue:
     	GeoPosition pos = gerenciador.getPosicao();     
-
-        // Lista para armazenar o resultado da consulta
+    	
+    	if(pos == null){
+    		JOptionPane.showMessageDialog(null,
+    			    "Você precisa selecionar um ponto do mapa primeiro.",
+    			    "Aviso",
+    			    JOptionPane.WARNING_MESSAGE);
+    		return;
+    	}
+        
         List<MyWaypoint> lstPoints = new ArrayList<>();
         
         if(pos != null){	        
@@ -411,6 +433,14 @@ public class JanelaConsulta extends javax.swing.JFrame {
     	gerenciador.clear();
     	Parada[] paradas = new Parada[listaParadasSelecionadas.size()];
     	listaParadasSelecionadas.copyInto(paradas);
+
+    	if(listaParadasSelecionadas.size() == 0){
+    		JOptionPane.showMessageDialog(null,
+    			    "Você precisa selecionar uma parada no mapa primeiro.",
+    			    "Aviso",
+    			    JOptionPane.WARNING_MESSAGE);
+    		return;
+    	}
 	    List<MyWaypoint> lstPoints = new ArrayList<>();
 	    for(String linhaKey: dicLinhas.keySet()){
 	    	Linha linha = dicLinhas.get(linhaKey);
