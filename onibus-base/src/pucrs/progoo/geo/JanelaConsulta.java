@@ -52,6 +52,8 @@ import java.awt.GridLayout;
 
 import javax.swing.BoxLayout;
 import javax.swing.JLabel;
+import java.awt.Component;
+import javax.swing.SwingConstants;
 
 /**
  *
@@ -196,6 +198,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         panel.addComponentListener(new ComponentAdapter() {        	        	
         });
         getContentPane().add(panel, BorderLayout.WEST);
+        panel.setLayout(new BorderLayout(0, 0));
         JScrollPane scrollPane = new JScrollPane();
         panel.add(scrollPane);
         listLinhas = new JList<>();
@@ -209,40 +212,66 @@ public class JanelaConsulta extends javax.swing.JFrame {
 
         this.listLinhas.setModel(listaLinhas);
         
+        JLabel lblNewLabel_2 = new JLabel("Lista de Linhas de \u00D4nibus de Porto Alegre:");
+        lblNewLabel_2.setHorizontalAlignment(SwingConstants.CENTER);
+        panel.add(lblNewLabel_2, BorderLayout.NORTH);
         
+        //tabela de resultados
         panelResultados = new JPanel();
         panelResultados.addComponentListener(new ComponentAdapter() {        	        	
         });
         getContentPane().add(panelResultados, BorderLayout.EAST);
-        panelResultados.setLayout(new BoxLayout(panelResultados, BoxLayout.X_AXIS));
+        panelResultados.setVisible(true);
+        panelResultados.setLayout(new BoxLayout(panelResultados, BoxLayout.Y_AXIS));
+        
+        //////
+        
+        JPanel panel_1 = new JPanel();
+        panel_1.setAlignmentY(Component.TOP_ALIGNMENT);
+        panel_1.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        panelResultados.add(panel_1);
+        panel_1.setLayout(new BorderLayout(0, 0));
         JScrollPane scrollPane_1 = new JScrollPane();
-        panelResultados.add(scrollPane_1);
+        panel_1.add(scrollPane_1);
         listLinhasSelecionadas = new JList<>();
-        listLinhasSelecionadas.setVisibleRowCount(32);
         listLinhasSelecionadas.setValueIsAdjusting(true);
         listLinhasSelecionadas.addComponentListener(new ComponentAdapter() {        	
         });        
         listLinhasSelecionadas.setBorder(null);
         scrollPane_1.setViewportView(listLinhasSelecionadas);
-        panelResultados.setVisible(true);
         
         this.listLinhasSelecionadas.setModel(listaLinhasSelecionadas);
         
+        JLabel lblNewLabel = new JLabel("Lista de Resultados de Consultas:");
+        lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
+        panel_1.add(lblNewLabel, BorderLayout.NORTH);
+        
+        //////
+        
+        JPanel panel_2 = new JPanel();
+        panel_2.setAlignmentX(Component.RIGHT_ALIGNMENT);
+        panel_2.setAlignmentY(Component.BOTTOM_ALIGNMENT);
+        panelResultados.add(panel_2);
+        panel_2.setLayout(new BorderLayout(0, 0));
+        
         JScrollPane scrollPane_2 = new JScrollPane();
-        panelResultados.add(scrollPane_2);
+        panel_2.add(scrollPane_2);
         listParadasSelecionadas = new JList<>();
-        listParadasSelecionadas.setVisibleRowCount(32);
         listParadasSelecionadas.setValueIsAdjusting(true);
         listParadasSelecionadas.addComponentListener(new ComponentAdapter() {        	
         });        
         listParadasSelecionadas.setBorder(null);
         scrollPane_2.setViewportView(listParadasSelecionadas);
-        panelResultados.setVisible(true);
         
         this.listParadasSelecionadas.setModel(listaParadasSelecionadas);
         
-        this.setSize(800,600);
-      
+        JLabel lblNewLabel_1 = new JLabel("Lista de Paradas Selecionadas:");
+        lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
+        panel_2.add(lblNewLabel_1, BorderLayout.NORTH);
+        
+        
+        
+        this.setSize(1015,769);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 

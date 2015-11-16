@@ -44,8 +44,7 @@ public class Parada{
 
 	@Override
 	public String toString() {
-		return "Parada [idParada=" + idParada + ", terminal=" + terminal
-				+ ", coordenadas=" + coordenadas + "]";
+		return "ID da Parada: " + idParada + " | Terminal: " + terminal;
 	}
 
 	
