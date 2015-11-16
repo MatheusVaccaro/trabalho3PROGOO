@@ -271,7 +271,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         
         
-        this.setSize(1015,769);
+        this.setSize(1240,720);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
