@@ -63,7 +63,7 @@ public class GerenciadorMapa {
         jXMapKit.getMainMap().setAlpha(0.5f);
 
         // Ajustando o nível de zoom do mapa
-        jXMapKit.setZoom(4);
+        jXMapKit.setZoom(7);
         // Informando o centro do mapa
         jXMapKit.setAddressLocation(centro);
         // Indicando que não desejamos ver um marcador nessa posição
