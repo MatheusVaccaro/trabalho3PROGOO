@@ -285,7 +285,10 @@ public class JanelaConsulta extends javax.swing.JFrame {
         	Parada aux = dicParadas.get(paradaKey);
         	if(AlgoritmosGeograficos.calcDistancia(pos, aux.getCoordenadas()) <= 0.05){
         		parada = aux;
-        		listaParadasSelecionadas.addElement(parada);
+        		if(listaParadasSelecionadas.contains(parada)){
+        			JOptionPane.showMessageDialog(null, "Este elemento já foi selecionado.", "Aviso", JOptionPane.WARNING_MESSAGE);
+        		}
+        		else	listaParadasSelecionadas.addElement(parada);
         		break;
         	}
         }
@@ -303,7 +306,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         
         for(String idParada: dicParadas.keySet()){
         	Parada parada = dicParadas.get(idParada);
-        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
+        	lstPoints.add(new MyWaypoint(Color.BLACK, "", parada.getCoordenadas()));
         }
         
         gerenciador.setPontos(lstPoints);
