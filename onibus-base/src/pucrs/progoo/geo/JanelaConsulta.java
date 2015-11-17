@@ -283,7 +283,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         Parada parada = null;
         for(String paradaKey: dicParadas.keySet()){
         	Parada aux = dicParadas.get(paradaKey);
-        	if(AlgoritmosGeograficos.calcDistancia(pos, aux.getCoordenadas()) <= 0.05){
+        	if(AlgoritmosGeograficos.calcDistancia(pos, aux.getCoordenadas()) <= 0.01){
         		parada = aux;
         		if(listaParadasSelecionadas.contains(parada)){
         			JOptionPane.showMessageDialog(null, "Este elemento já foi selecionado.", "Aviso", JOptionPane.WARNING_MESSAGE);
