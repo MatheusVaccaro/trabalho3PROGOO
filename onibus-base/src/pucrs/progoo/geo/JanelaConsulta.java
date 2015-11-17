@@ -323,7 +323,7 @@ public class JanelaConsulta extends javax.swing.JFrame {
         //percorre todas as paradas de uma determinada linha e cria waypoints para elas no mapa
         for(String idParada: dicParadas.keySet()){
         	Parada parada = dicParadas.get(idParada);
-        	lstPoints.add(new MyWaypoint(Color.BLACK, parada.getIdParada(), parada.getCoordenadas()));
+        	lstPoints.add(new MyWaypoint(Color.BLACK, "", parada.getCoordenadas()));
         }
         
         gerenciador.setPontos(lstPoints);
