@@ -1,0 +1,26 @@
+Matheus M. Vaccaro e Victor B. Diehl (Grupo 7)
+
+Consulta 1:
+A Linha de ônibus selecionada é recebida da "Lista de Linhas de Õnibus de 
+Porto Alegre", e a partir dela é obtido seu dicionário de Paradas. Essas Paradas
+são marcadas no mapa através de Waypoints. O traçado da Linha é pintado a partir 
+de seu Array de coordenadas (GeoPosition).
+
+Consulta 2:
+A Parada selecionada no mapa (com o botão direito do mouse) é identificada e marcada com
+um Waypoint. Para cada Linha do dicionário de Linhas, é obtido o seu dicionário de Paradas. 
+Esse dicionário será percorrido procurando a ocorrência da parada identificada no mapa.
+Caso essa Parada seja encontrada, as Linhas que a possuem serão pintadas e adicionadas à 
+"Lista de Resultados de Consultas".
+
+Consulta 3:
+As coordenadas de um ponto clicado no mapa são comparadas com as coordenadas de cada Linha,
+se pelo menos uma coordenada da Linha estiver a 50 metros do ponto selecionado, a Linha
+será pintada no mapa. As linhas pintadas são adicionadas à "Lista de Resultados de Consultas".
+
+Consulta 4:
+Um conjunto de Paradas selecionadas no mapa é inserido em "Lista de Paradas Selecionadas".
+Todas as Linhas de ônibus são percorridas procurando as Paradas da lista mencionada acima.
+Caso a Linha contenha todas as Paradas selecionadas, ela será pintada no mapa e adicionada à 
+"Lista de Resultados de Consultas". As Paradas da "Lista de Paradas Selecionadas" são marcadas
+no mapa com Waypoints.

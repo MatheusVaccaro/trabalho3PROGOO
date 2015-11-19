@@ -410,10 +410,11 @@ public class JanelaConsulta extends javax.swing.JFrame {
 	        for(String idLinha: dicLinhas.keySet()){ //percorre as  linhas
 	        	Linha linha = dicLinhas.get(idLinha);
 	        	ArrayList<GeoPosition> coordenadas = linha.getCoordenadas();
-	        	for(GeoPosition coordenada: coordenadas){
+	        	for(GeoPosition coordenada: coordenadas){ //percorre as coordenadas de cada linha
 	        		if(AlgoritmosGeograficos.calcDistancia(pos, coordenada) <= 0.05){
 	        			listaLinhasSelecionadas.addElement(linha);
 	        			
+	      
 	        			Tracado tr = new Tracado();
 	        	        
 	        	        ArrayList<GeoPosition> listaCoordenadas = linha.getCoordenadas();
